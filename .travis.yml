@@ -11,8 +11,8 @@ matrix:
     - php: hhvm
 before_install:
   - cd ..
-  - git clone https://github.com/neos/flow-development-collection.git
-  - cd flow-development-collection
+  - git clone https://github.com/neos/flow-development-distribution.git
+  - cd flow-development-distribution
   - git checkout 2.0.0
   - composer update
   - composer require codeclimate/php-test-reporter:dev-master --dev
