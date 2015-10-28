@@ -14,7 +14,7 @@ before_install:
   - git clone https://github.com/neos/flow-development-collection.git
   - cd flow-development-collection
   - git checkout 2.0.0
-  - composer update --dev
+  - composer update
   - composer require codeclimate/php-test-reporter:dev-master --dev
 install:
   - mv ../RFY.JsonApi.Authenticator Packages/Application
