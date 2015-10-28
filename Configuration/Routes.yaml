@@ -1,0 +1,9 @@
+-
+  name: 'Authenticate'
+  uriPattern: 'authenticate'
+  appendExceedingArguments: true
+  defaults:
+    '@package':    'Refactory.Login'
+    '@controller': 'Login'
+    '@action':     'authenticate'
+    '@format':     'json'

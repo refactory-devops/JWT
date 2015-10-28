@@ -1,0 +1,16 @@
+{
+    "name": "rfy/jsonapi-authenticator",
+    "type": "typo3-flow-package",
+    "description": "A authentication provider based on POST which replies in JSON",
+    "require": {
+        "typo3/flow": "*"
+    },
+    "autoload": {
+        "psr-0": {
+            "RFY\\JsonApi\\Authenticator": "Classes"
+        }
+    },
+    "require-dev": {
+        "codeclimate/php-test-reporter": "dev-master"
+    }
+}
