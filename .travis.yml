@@ -12,7 +12,7 @@ matrix:
 before_install:
   - cd ..
   - git clone https://github.com/neos/flow-development-collection.git
-  - cd neos-base-distribution
+  - cd flow-development-collection
   - git checkout 2.0.0
   - composer update --dev
   - composer require codeclimate/php-test-reporter:dev-master --dev

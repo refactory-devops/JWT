@@ -1,9 +1,8 @@
 -
   name: 'Authenticate'
-  uriPattern: 'authenticate'
-  appendExceedingArguments: true
+  uriPattern: 'session'
   defaults:
-    '@package':    'Refactory.Login'
-    '@controller': 'Login'
+    '@package':    'RFY.JsonApi.Authenticator'
+    '@controller': 'Session'
     '@action':     'authenticate'
     '@format':     'json'

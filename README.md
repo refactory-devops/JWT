@@ -1,10 +1,9 @@
-RFY.JsonApi.Authenticator
--------------------------
+# RFY.JsonApi.Authenticator
 [![Code Climate](https://codeclimate.com/github/rfyio/RFY.JsonApi.Authenicator/badges/gpa.svg)](https://codeclimate.com/github/rfyio/RFY.JsonApi.Authenicator)
 [![Test Coverage](https://codeclimate.com/github/rfyio/RFY.JsonApi.Authenicator/badges/coverage.svg)](https://codeclimate.com/github/rfyio/RFY.JsonApi.Authenicator/coverage)
 [![Build Status](https://travis-ci.org/rfyio/RFY.JsonApi.Authenicator.svg)](https://travis-ci.org/rfyio/RFY.JsonApi.Authenicator)
 
-# Working in progress.....
+## Working in progress.....
 
 
 This package is meant to make a POST authentication possible for any Json based authentication attempt.
@@ -14,7 +13,7 @@ The possible responses are:
 - AuthenticationSuccessfull which returns the authenticated user-ID
 - AuthenticationFailure which returns a message with the corresponding error code
 
-#Intended Features:
+### Intended Features:
 
 
 Authors:
