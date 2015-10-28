@@ -13,6 +13,27 @@ The possible responses are:
 - AuthenticationSuccessfull which returns the authenticated user-ID
 - AuthenticationFailure which returns a message with the corresponding error code
 
+## Getting started
+
+To start using this package you will need to do the following steps:
+
+To incluse this package into your TYPO3 Flow application just run:
+
+	composer require rfy/jsonapi/authenticator
+
+Add the below YAML to the projects `Configuration/Routes.yaml`:
+
+```
+	-
+	  name: 'Session'
+	  uriPattern: '<SessionSubroutes>'
+	  defaults:
+	    '@format': 'json'
+	  subRoutes:
+	    SessionSubroutes:
+	      package: RFY.JsonApi.Authenticator
+```
+
 ### Intended Features:
 
 
