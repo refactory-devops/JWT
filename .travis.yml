@@ -1,0 +1,25 @@
+language: php
+php:
+  - 5.5
+  - 5.5.9
+  - 5.6
+  - 7.0
+  - hhvm
+matrix:
+  allow_failures:
+    - php: 7.0
+    - php: hhvm
+before_install:
+  - cd ..
+  - git clone https://github.com/neos/flow-development-collection.git
+  - cd neos-base-distribution
+  - git checkout 2.0.0
+  - composer update --dev
+  - composer require codeclimate/php-test-reporter:dev-master --dev
+install:
+  - mv ../RFY.JsonApi.Authenticator Packages/Application
+script:
+  - bin/phpunit -c Packages/Application/RFY.JsonApi.Authenticator/UnitTests.xml --coverage-clover build/logs/clover.xml
+  - bin/phpunit --stop-on-failure -c Packages/Application/RFY.JsonApi.Authenticator/UnitTests.xml --testsuite "RFY.JsonApi.Authenticator tests"
+  - cd Packages/Application/RFY.JsonApi.Authenticator
+  - ../../../bin/test-reporter

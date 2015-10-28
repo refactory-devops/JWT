@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<phpunit
+		bootstrap="../../../Build/BuildEssentials/PhpUnit/UnitTestBootstrap.php"
+		beStrictAboutChangesToGlobalState="true"
+		beStrictAboutTestsThatDoNotTestAnything="true"
+		checkForUnintentionallyCoveredCode="true"
+		beStrictAboutOutputDuringTests="true"
+		convertErrorsToExceptions="true"
+		convertNoticesToExceptions="true"
+		convertWarningsToExceptions="true"
+		timeoutForSmallTests="0">
+	<testsuites>
+		<testsuite name="All tests">
+			<directory>../../../Packages/Application/RFY.JsonApi.Authenticator/Tests/Unit</directory>
+			<exclude>../../../Packages/Libraries</exclude>
+		</testsuite>
+	</testsuites>
+	<filter>
+		<whitelist addUncoveredFilesFromWhitelist="false">
+			<directory>../../../Packages/*/*/Classes</directory>
+		</whitelist>
+	</filter>
+	<logging>
+		<log type="coverage-clover" target="./build/logs/clover.xml"/>
+		<log type="junit" target="./build/logs/UnitTests.xml" logIncompleteSkipped="false"/>
+	</logging>
+</phpunit>
