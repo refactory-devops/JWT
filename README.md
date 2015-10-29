@@ -1,7 +1,7 @@
 # RFY.JsonApi.Authenticator
-[![Code Climate](https://codeclimate.com/github/rfyio/RFY.JsonApi.Authenicator/badges/gpa.svg)](https://codeclimate.com/github/rfyio/RFY.JsonApi.Authenicator)
-[![Test Coverage](https://codeclimate.com/github/rfyio/RFY.JsonApi.Authenicator/badges/coverage.svg)](https://codeclimate.com/github/rfyio/RFY.JsonApi.Authenicator/coverage)
-[![Build Status](https://travis-ci.org/rfyio/RFY.JsonApi.Authenicator.svg)](https://travis-ci.org/rfyio/RFY.JsonApi.Authenicator)
+[![Code Climate](https://codeclimate.com/github/rfyio/RFY.JsonApi.Authenticator/badges/gpa.svg)](https://codeclimate.com/github/rfyio/RFY.JsonApi.Authenticator)
+[![Test Coverage](https://codeclimate.com/github/rfyio/RFY.JsonApi.Authenticator/badges/coverage.svg)](https://codeclimate.com/github/rfyio/RFY.JsonApi.Authenticator/coverage)
+[![Build Status](https://travis-ci.org/rfyio/RFY.JsonApi.Authenticator.svg)](https://travis-ci.org/rfyio/RFY.JsonApi.Authenticator)
 
 ## Working in progress.....
 
