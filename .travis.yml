@@ -18,6 +18,9 @@ before_install:
   - composer require codeclimate/php-test-reporter:dev-master --dev
 install:
   - mkdir -p Packages/Application
+  - ls -la
+  - ls -la ..
+  - ls -la ../..
   - mv ../RFY.JsonApi.Authenticator Packages/Application
 script:
   - bin/phpunit -c Packages/Application/RFY.JsonApi.Authenticator/UnitTests.xml --coverage-clover build/logs/clover.xml
