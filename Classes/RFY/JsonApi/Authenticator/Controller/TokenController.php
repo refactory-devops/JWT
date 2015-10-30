@@ -79,10 +79,6 @@ class TokenController extends AbstractAuthenticationController {
 
 		$hmac = $this->hashService->generateHmac('token');
 
-		$tokenCookie = new Cookie('token', JWT::encode($payload, $hmac));
-
-		$this->response->setCookie($tokenCookie);
-
 		$this->view->assign('value', array('token' => JWT::encode($payload, $hmac)));
 	}
 
