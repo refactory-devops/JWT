@@ -57,7 +57,6 @@ class PersistedApiTokenProvider extends PersistedUsernamePasswordProvider {
 			throw new UnsupportedAuthenticationTokenException('This provider cannot authenticate the given token.', 1417040168);
 		}
 
-
 		/** @var $account Account */
 		$account = NULL;
 		$credentials = $authenticationToken->getCredentials();
@@ -77,6 +76,9 @@ class PersistedApiTokenProvider extends PersistedUsernamePasswordProvider {
 				} else {
 					$authenticationToken->setAuthenticationStatus(TokenInterface::WRONG_CREDENTIALS);
 				}
+			} elseif ($authenticationToken->getAuthenticationStatus() !== TokenInterface::AUTHENTICATION_SUCCESSFUL && $credentials['password'] !== '') {
+
+				$authenticationToken->setAuthenticationStatus(TokenInterface::WRONG_CREDENTIALS);
 			} elseif ($authenticationToken->getAuthenticationStatus() !== TokenInterface::AUTHENTICATION_SUCCESSFUL) {
 				$authenticationToken->setAuthenticationStatus(TokenInterface::NO_CREDENTIALS_GIVEN);
 			}

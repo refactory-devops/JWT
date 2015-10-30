@@ -17,21 +17,35 @@ class ApiToken extends AbstractToken implements SessionlessTokenInterface {
 	 * @var array
 	 * @Flow\Transient
 	 */
-	protected $credentials = array('token' => '');
+	protected $credentials = array('token' => '', 'username' => '', 'password' => '');
 
 	/**
 	 * @param ActionRequest $actionRequest The current action request
 	 * @return void
 	 */
 	public function updateCredentials(ActionRequest $actionRequest) {
-		$ApiTokenCookie = $actionRequest->getHttpRequest()->getCookie('token');
+//		$apiTokenCookie = $actionRequest->getHttpRequest()->getCookie('token');
 
-		if ($ApiTokenCookie === NULL) {
+		if ($actionRequest->getHttpRequest()->getMethod() === 'OPTIONS') {
 			return;
 		}
 
-		$this->credentials['token'] = $ApiTokenCookie->getValue();
-		$this->setAuthenticationStatus(self::AUTHENTICATION_NEEDED);
+		$authorizationHeader = $actionRequest->getHttpRequest()->getHeaders()->get('Authorization');
+
+		if (substr($authorizationHeader, 0, 5) === 'Basic') {
+			$credentials = base64_decode(substr($authorizationHeader, 6));
+			$this->credentials['username'] = substr($credentials, 0, strpos($credentials, ':'));
+			$this->credentials['password'] = substr($credentials, strpos($credentials, ':') + 1);
+
+			$this->setAuthenticationStatus(self::AUTHENTICATION_NEEDED);
+		} elseif (substr($authorizationHeader, 0, 5) === 'Token') {
+			$this->credentials['token'] = substr($authorizationHeader, 6);
+			$this->setAuthenticationStatus(self::AUTHENTICATION_NEEDED);
+		} else {
+			$this->credentials = array('token'=> NULL, 'username' => NULL, 'password' => NULL);
+			$this->authenticationStatus = self::NO_CREDENTIALS_GIVEN;
+			return;
+		}
 	}
 
 	/**

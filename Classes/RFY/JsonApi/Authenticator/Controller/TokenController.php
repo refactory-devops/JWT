@@ -67,19 +67,6 @@ class TokenController extends AbstractAuthenticationController {
 	}
 
 	/**
-	 * Authenticates an account by invoking the Provider based Authentication Manager.
-	 *
-	 * On successful authentication redirects to the list of posts, otherwise returns
-	 * to the login screen.
-	 *
-	 * @return void
-	 * @throws \TYPO3\Flow\Security\Exception\AuthenticationRequiredException
-	 */
-	public function authenticateAction() {
-		parent::authenticateAction();
-	}
-
-	/**
 	 * Is called if authentication was successful.
 	 *
 	 * @param \TYPO3\Flow\Mvc\ActionRequest $originalRequest The request that was intercepted by the security framework, NULL if there was none
@@ -106,20 +93,31 @@ class TokenController extends AbstractAuthenticationController {
 	 * @return void
 	 */
 	protected function onAuthenticationFailure(AuthenticationRequiredException $exception = null) {
+		$responseIdentifier = 0;
 
 		/** @var TokenInterface $token */
 		foreach($this->authenticationManager->getTokens() as $token) {
-			$responseIdentifier = $token->getAuthenticationStatus();
+			if ($token->getAuthenticationStatus() > $responseIdentifier) {
+				$responseIdentifier = $token->getAuthenticationStatus();
+			}
 		}
 
 		$locale = $this->localizationService->getConfiguration()->getCurrentLocale();
 		$package = $this->controllerContext->getRequest()->getControllerPackageKey();
 
-
 		$this->view->assign('value', array(
 			'responseText' => $this->translator->translateById('authentication.response.' . $responseIdentifier, array(), NULL, $locale, 'Main', $package),
 			'responseIdentifier' => $responseIdentifier
 		));
+
+		if ($this->request->getHttpRequest()->getMethod() !== 'OPTIONS') {
+			$this->response->setStatus(401);
+		}
 	}
 
+	/**
+	 * Overwrite default behaviour
+	 */
+	protected function errorAction() {
+	}
 }
