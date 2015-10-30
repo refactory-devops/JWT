@@ -1,8 +1,8 @@
 -
   name: 'Authenticate'
-  uriPattern: 'session'
+  uriPattern: 'token'
   defaults:
     '@package':    'RFY.JsonApi.Authenticator'
-    '@controller': 'Session'
+    '@controller': 'Token'
     '@action':     'authenticate'
     '@format':     'json'

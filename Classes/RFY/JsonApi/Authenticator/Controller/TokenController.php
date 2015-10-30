@@ -6,15 +6,26 @@ namespace RFY\JsonApi\Authenticator\Controller;
  *                                                                        *
  *                                                                        */
 
+use RFY\JsonApi\Authenticator\JWT;
 use TYPO3\Flow\Annotations as Flow;
+use TYPO3\Flow\Http\Cookie;
 use TYPO3\Flow\Security\Authentication\Controller\AbstractAuthenticationController;
+use TYPO3\Flow\Security\Exception\AuthenticationRequiredException;
+use TYPO3\Flow\Mvc\View\JsonView;
+use TYPO3\Flow\Security\Cryptography\HashService;
 
 /**
  * A controller which allows for logging into an application
  *
  * @Flow\Scope("singleton")
  */
-class SessionController extends AbstractAuthenticationController {
+class TokenController extends AbstractAuthenticationController {
+
+	/**
+	 * @Flow\Inject
+	 * @var HashService
+	 */
+	protected $hashService;
 
 	/**
 	 * @var array
@@ -29,6 +40,20 @@ class SessionController extends AbstractAuthenticationController {
 	);
 
 	/**
+	 *
+	 */
+	public function initializeAuthenticateAction() {
+		$this->response->setHeader('Access-Control-Allow-Headers', 'Authorization');
+		$this->response->setHeader('Access-Control-Allow-Origin', '*');
+
+		if ($this->request->getHttpRequest()->getMethod() === 'OPTIONS') {
+			$this->response->setStatus(204);
+
+			return '';
+		}
+	}
+
+	/**
 	 * Authenticates an account by invoking the Provider based Authentication Manager.
 	 *
 	 * On successful authentication redirects to the list of posts, otherwise returns
@@ -38,29 +63,14 @@ class SessionController extends AbstractAuthenticationController {
 	 * @throws \TYPO3\Flow\Security\Exception\AuthenticationRequiredException
 	 */
 	public function authenticateAction() {
-		$authenticationException = NULL;
-		try {
-			$this->authenticationManager->authenticate();
-		} catch (\TYPO3\Flow\Security\Exception\AuthenticationRequiredException $exception) {
-			$authenticationException = $exception;
+		$payload = array('accountIdentifier' => 'indiener');
+		$hmac = $this->hashService->generateHmac('token');
 
-//			$response = new Response();
-//			$response->setType('error');
-//			$response->setMessage('The entered username or password was wrong!');
-//			$this->view->assign('value', $response);
-		}
+//		\TYPO3\Flow\var_dump(JWT::encode($payload, $hmac), 'test authenticate');
 
-		if ($this->authenticationManager->isAuthenticated()) {
-			$storedRequest = $this->securityContext->getInterceptedRequest();
-			if ($storedRequest !== NULL) {
-				$this->securityContext->setInterceptedRequest(NULL);
-			}
-			$this->onAuthenticationSuccess($storedRequest);
-		} else {
-			$this->onAuthenticationFailure($authenticationException);
-		}
+		parent::authenticateAction();
 
-		$this->response->setHeader('Access-Control-Allow-Origin', '*');
+//		\TYPO3\Flow\var_dump('Done authenticate');
 	}
 
 	/**
@@ -70,7 +80,17 @@ class SessionController extends AbstractAuthenticationController {
 	 * @return string
 	 */
 	public function onAuthenticationSuccess(\TYPO3\Flow\Mvc\ActionRequest $originalRequest = NULL) {
-		// Respond with authenticated account?
+		/** @var \TYPO3\Flow\Security\Account $account */
+		$account = $this->securityContext->getAccount();
+		$payload = array('accountIdentifier' => $account->getAccountIdentifier());
+
+		$hmac = $this->hashService->generateHmac('token');
+
+		$tokenCookie = new Cookie('token', JWT::encode($payload, $hmac));
+
+		$this->response->setCookie($tokenCookie);
+
+		$this->view->assign('value', array('token' => JWT::encode($payload, $hmac)));
 	}
 
 	/**
@@ -82,6 +102,7 @@ class SessionController extends AbstractAuthenticationController {
 	protected function onAuthenticationFailure(AuthenticationRequiredException $exception = null) {
 		// Respond with json formatted info
 //		$this->addFlashMessage('The entered username or password was wrong', 'Wrong credentials', Message::SEVERITY_ERROR, array(), ($exception === null ? 1347016771 : $exception->getCode()));
+		$this->view->assign('value', array('responseText' => 'Failure'));
 	}
 
 }
