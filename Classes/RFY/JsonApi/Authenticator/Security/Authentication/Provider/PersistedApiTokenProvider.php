@@ -41,7 +41,7 @@ class PersistedApiTokenProvider extends PersistedUsernamePasswordProvider {
 	 * @return array
 	 */
 	public function getTokenClassNames() {
-		return array('RFY\JsonApi\Authenticator\Security\Authentication\Token\ApiToken', 'TYPO3\Flow\Security\Authentication\Token\UsernamePassword');
+		return array('RFY\JsonApi\Authenticator\Security\Authentication\Token\ApiToken');
 	}
 
 	/**

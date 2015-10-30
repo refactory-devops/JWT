@@ -5,6 +5,9 @@ use \DomainException;
 use \InvalidArgumentException;
 use \UnexpectedValueException;
 use \DateTime;
+use RFY\JsonApi\Authenticator\Exception\BeforeValidException;
+use RFY\JsonApi\Authenticator\Exception\ExpiredException;
+use RFY\JsonApi\Authenticator\Exception\SignatureInvalidException;
 
 /**
  * JSON Web Token implementation, based on this spec:
@@ -192,7 +195,7 @@ class JWT {
 	 *
 	 * @throws DomainException Invalid Algorithm or OpenSSL failure
 	 */
-	private static function verify($msg, $signature, $key, $alg)
+	protected static function verify($msg, $signature, $key, $alg)
 	{
 		if (empty(self::$supported_algs[$alg])) {
 			throw new DomainException('Algorithm not supported');
@@ -312,7 +315,7 @@ class JWT {
 	 *
 	 * @return void
 	 */
-	private static function handleJsonError($errno)
+	protected static function handleJsonError($errno)
 	{
 		$messages = array(
 			JSON_ERROR_DEPTH => 'Maximum stack depth exceeded',
@@ -333,7 +336,7 @@ class JWT {
 	 *
 	 * @return int
 	 */
-	private static function safeStrlen($str)
+	protected static function safeStrlen($str)
 	{
 		if (function_exists('mb_strlen')) {
 			return mb_strlen($str, '8bit');
