@@ -25,12 +25,12 @@ Add the below YAML to the projects `Configuration/Routes.yaml`:
 
 ```
 	-
-	  name: 'Session'
-	  uriPattern: '<SessionSubroutes>'
+	  name: 'Token'
+	  uriPattern: '<TokenSubroutes>'
 	  defaults:
 	    '@format': 'json'
 	  subRoutes:
-	    SessionSubroutes:
+	    TokenSubroutes:
 	      package: RFY.JsonApi.Authenticator
 ```
 
