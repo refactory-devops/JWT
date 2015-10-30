@@ -36,6 +36,9 @@ Add the below YAML to the projects `Configuration/Routes.yaml`:
 
 ### Intended Features:
 
+### References:
+
+This implementation is based on the [Firebase JWT package](https://github.com/firebase/php-jwt)
 
 Authors:
 --------

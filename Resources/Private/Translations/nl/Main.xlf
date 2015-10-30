@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+	<file original="" source-language="en" datatype="plaintext" target-language="nl">
+		<body>
+			<trans-unit id="authentication.response.1">
+				<source>No credentials given.</source>
+				<target>Geen gebruikersnaam en wachtwoord opgegeven.</target>
+			</trans-unit>
+			<trans-unit id="authentication.response.2">
+				<source>Wrong username and password combination.</source>
+				<target>Verkeerde gebruikersnaam en wachtwoord combinatie.</target>
+			</trans-unit>
+			<trans-unit id="authentication.response.3">
+				<source>Successfully signed in.</source>
+				<target>Succesvol ingelogd.</target>
+			</trans-unit>
+			<trans-unit id="authentication.response.4">
+				<source>Authentication needed.</source>
+				<target>Authenticatie nodig.</target>
+			</trans-unit>
+		</body>
+	</file>
+</xliff>

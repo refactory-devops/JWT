@@ -9,6 +9,7 @@ namespace RFY\JsonApi\Authenticator\Controller;
 use TYPO3\Flow\Annotations as Flow;
 use TYPO3\Flow\Http\Cookie;
 use TYPO3\Flow\Security\Authentication\Controller\AbstractAuthenticationController;
+use TYPO3\Flow\Security\Authentication\TokenInterface;
 use TYPO3\Flow\Security\Exception\AuthenticationRequiredException;
 use TYPO3\Flow\Mvc\View\JsonView;
 use TYPO3\Flow\Security\Cryptography\HashService;
@@ -38,6 +39,18 @@ class TokenController extends AbstractAuthenticationController {
 	protected $viewFormatToObjectNameMap = array(
 		'json' => 'TYPO3\Flow\Mvc\View\JsonView'
 	);
+
+	/**
+	 * @var \TYPO3\Flow\I18n\Translator
+	 * @Flow\Inject
+	 */
+	protected $translator;
+
+	/**
+	 * @var \TYPO3\Flow\I18n\Service
+	 * @Flow\Inject
+	 */
+	protected $localizationService;
 
 	/**
 	 *
@@ -93,7 +106,20 @@ class TokenController extends AbstractAuthenticationController {
 	 * @return void
 	 */
 	protected function onAuthenticationFailure(AuthenticationRequiredException $exception = null) {
- 		$this->view->assign('value', array('responseText' => 'Failure'));
+
+		/** @var TokenInterface $token */
+		foreach($this->authenticationManager->getTokens() as $token) {
+			$responseIdentifier = $token->getAuthenticationStatus();
+		}
+
+		$locale = $this->localizationService->getConfiguration()->getCurrentLocale();
+		$package = $this->controllerContext->getRequest()->getControllerPackageKey();
+
+
+		$this->view->assign('value', array(
+			'responseText' => $this->translator->translateById('authentication.response.' . $responseIdentifier, array(), NULL, $locale, 'Main', $package),
+			'responseIdentifier' => $responseIdentifier
+		));
 	}
 
 }
