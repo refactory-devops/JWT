@@ -63,14 +63,7 @@ class TokenController extends AbstractAuthenticationController {
 	 * @throws \TYPO3\Flow\Security\Exception\AuthenticationRequiredException
 	 */
 	public function authenticateAction() {
-		$payload = array('accountIdentifier' => 'indiener');
-		$hmac = $this->hashService->generateHmac('token');
-
-//		\TYPO3\Flow\var_dump(JWT::encode($payload, $hmac), 'test authenticate');
-
 		parent::authenticateAction();
-
-//		\TYPO3\Flow\var_dump('Done authenticate');
 	}
 
 	/**
@@ -79,7 +72,7 @@ class TokenController extends AbstractAuthenticationController {
 	 * @param \TYPO3\Flow\Mvc\ActionRequest $originalRequest The request that was intercepted by the security framework, NULL if there was none
 	 * @return string
 	 */
-	public function onAuthenticationSuccess(\TYPO3\Flow\Mvc\ActionRequest $originalRequest = NULL) {
+	protected function onAuthenticationSuccess(\TYPO3\Flow\Mvc\ActionRequest $originalRequest = NULL) {
 		/** @var \TYPO3\Flow\Security\Account $account */
 		$account = $this->securityContext->getAccount();
 		$payload = array('accountIdentifier' => $account->getAccountIdentifier());
@@ -100,9 +93,7 @@ class TokenController extends AbstractAuthenticationController {
 	 * @return void
 	 */
 	protected function onAuthenticationFailure(AuthenticationRequiredException $exception = null) {
-		// Respond with json formatted info
-//		$this->addFlashMessage('The entered username or password was wrong', 'Wrong credentials', Message::SEVERITY_ERROR, array(), ($exception === null ? 1347016771 : $exception->getCode()));
-		$this->view->assign('value', array('responseText' => 'Failure'));
+ 		$this->view->assign('value', array('responseText' => 'Failure'));
 	}
 
 }
