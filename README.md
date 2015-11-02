@@ -5,13 +5,13 @@
 
 ## Working in progress.....
 
-
 This package is meant to make a POST authentication possible for any Json based authentication attempt.
 
 The possible responses are:
 
-- AuthenticationSuccessfull which returns the authenticated user-ID
+- AuthenticationSuccessfull which returns the authentication JWT token
 - AuthenticationFailure which returns a message with the corresponding error code
+
 
 ## Getting started
 
@@ -34,11 +34,26 @@ Add the below YAML to the projects `Configuration/Routes.yaml`:
 	      package: RFY.JsonApi.Authenticator
 ```
 
+By default the security features are enabled in this package by these settings:
+
+```
+TYPO3:
+  Flow:
+    security:
+      authentication:
+        providers:
+          'HttpBasicProvider':
+            provider: 'PersistedUsernamePasswordProvider'
+            token: 'TYPO3\Flow\Security\Authentication\Token\UsernamePasswordHttpBasic'
+            entryPoint: 'HttpBasic'
+```
+
+
 ### Intended Features:
 
 ### References:
 
-This implementation is based on the [Firebase JWT package](https://github.com/firebase/php-jwt)
+This implementation is requires the [Firebase JWT package](https://github.com/firebase/php-jwt).
 
 Authors:
 --------

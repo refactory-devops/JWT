@@ -7,13 +7,10 @@ namespace RFY\JsonApi\Authenticator\Controller;
  *                                                                        */
 
 use TYPO3\Flow\Annotations as Flow;
-use TYPO3\Flow\Http\Cookie;
 use TYPO3\Flow\Security\Authentication\Controller\AbstractAuthenticationController;
 use TYPO3\Flow\Security\Authentication\TokenInterface;
 use TYPO3\Flow\Security\Exception\AuthenticationRequiredException;
 use TYPO3\Flow\Mvc\View\JsonView;
-use TYPO3\Flow\Security\Cryptography\HashService;
-use RFY\JsonApi\Authenticator\JWT;
 
 /**
  * A controller which allows for logging into an application
@@ -21,12 +18,6 @@ use RFY\JsonApi\Authenticator\JWT;
  * @Flow\Scope("singleton")
  */
 class TokenController extends AbstractAuthenticationController {
-
-	/**
-	 * @Flow\Inject
-	 * @var HashService
-	 */
-	protected $hashService;
 
 	/**
 	 * @var array

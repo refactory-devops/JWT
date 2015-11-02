@@ -17,14 +17,14 @@ class ApiToken extends AbstractToken implements SessionlessTokenInterface {
 	 * @var array
 	 * @Flow\Transient
 	 */
-	protected $credentials = array('token' => '', 'username' => '', 'password' => '');
+	protected $credentials = array('token' => '');
 
 	/**
 	 * @param ActionRequest $actionRequest The current action request
 	 * @return void
 	 */
 	public function updateCredentials(ActionRequest $actionRequest) {
-//		$apiTokenCookie = $actionRequest->getHttpRequest()->getCookie('token');
+		$apiTokenCookie = $actionRequest->getHttpRequest()->getCookie('token');
 
 		if ($actionRequest->getHttpRequest()->getMethod() === 'OPTIONS') {
 			return;
@@ -32,17 +32,16 @@ class ApiToken extends AbstractToken implements SessionlessTokenInterface {
 
 		$authorizationHeader = $actionRequest->getHttpRequest()->getHeaders()->get('Authorization');
 
-		if (substr($authorizationHeader, 0, 5) === 'Basic') {
-			$credentials = base64_decode(substr($authorizationHeader, 6));
-			$this->credentials['username'] = substr($credentials, 0, strpos($credentials, ':'));
-			$this->credentials['password'] = substr($credentials, strpos($credentials, ':') + 1);
-
-			$this->setAuthenticationStatus(self::AUTHENTICATION_NEEDED);
-		} elseif (substr($authorizationHeader, 0, 5) === 'Token') {
+		if (substr($authorizationHeader, 0, 5) === 'Token') {
 			$this->credentials['token'] = substr($authorizationHeader, 6);
+			$this->credentials['user_agent'] = $actionRequest->getHttpRequest()->getHeader('HTTP_USER_AGENT');
+			$this->setAuthenticationStatus(self::AUTHENTICATION_NEEDED);
+		} elseif ($apiTokenCookie !== NULL) {
+			$this->credentials['token'] = $apiTokenCookie;
+			$this->credentials['user_agent'] = $actionRequest->getHttpRequest()->getHeader('HTTP_USER_AGENT');
 			$this->setAuthenticationStatus(self::AUTHENTICATION_NEEDED);
 		} else {
-			$this->credentials = array('token'=> NULL, 'username' => NULL, 'password' => NULL);
+			$this->credentials = array('token'=> NULL);
 			$this->authenticationStatus = self::NO_CREDENTIALS_GIVEN;
 			return;
 		}

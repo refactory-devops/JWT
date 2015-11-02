@@ -3,19 +3,18 @@ namespace RFY\JsonApi\Authenticator\Security\Authentication\Provider;
 
 use TYPO3\Flow\Annotations as Flow;
 use TYPO3\Flow\Security\Account;
-use TYPO3\Flow\Security\Authentication\Provider\PersistedUsernamePasswordProvider;
+use TYPO3\Flow\Security\Authentication\Provider\AbstractProvider;
 use TYPO3\Flow\Security\Authentication\TokenInterface;
 use TYPO3\Flow\Security\Cryptography\HashService;
 use TYPO3\Flow\Security\Exception\UnsupportedAuthenticationTokenException;
 
 use RFY\JsonApi\Authenticator\Security\Authentication\Token\ApiToken;
-use TYPO3\Flow\Security\Authentication\Token\UsernamePassword;
-use RFY\JsonApi\Authenticator\JWT;
+use Firebase\JWT\JWT;
 
 /**
  * An authentication provider that authenticates ApiTokens
  */
-class PersistedApiTokenProvider extends PersistedUsernamePasswordProvider {
+class PersistedApiTokenProvider extends AbstractProvider {
 
 	/**
 	 * @Flow\Inject
@@ -53,7 +52,7 @@ class PersistedApiTokenProvider extends PersistedUsernamePasswordProvider {
 	 * @throws UnsupportedAuthenticationTokenException
 	 */
 	public function authenticate(TokenInterface $authenticationToken) {
-		if (!($authenticationToken instanceof ApiToken) && !($authenticationToken instanceof UsernamePassword)) {
+		if (!($authenticationToken instanceof ApiToken)) {
 			throw new UnsupportedAuthenticationTokenException('This provider cannot authenticate the given token.', 1417040168);
 		}
 
@@ -61,30 +60,7 @@ class PersistedApiTokenProvider extends PersistedUsernamePasswordProvider {
 		$account = NULL;
 		$credentials = $authenticationToken->getCredentials();
 
-			// Authenticate by username and password
-		if (is_array($credentials) && isset($credentials['username'])) {
-			$providerName = $this->name;
-			$accountRepository = $this->accountRepository;
-			$this->securityContext->withoutAuthorizationChecks(function() use ($credentials, $providerName, $accountRepository, &$account) {
-				$account = $accountRepository->findActiveByAccountIdentifierAndAuthenticationProviderName($credentials['username'], $providerName);
-			});
-
-			if (is_object($account)) {
-				if ($this->hashService->validatePassword($credentials['password'], $account->getCredentialsSource())) {
-					$authenticationToken->setAuthenticationStatus(TokenInterface::AUTHENTICATION_SUCCESSFUL);
-					$authenticationToken->setAccount($account);
-				} else {
-					$authenticationToken->setAuthenticationStatus(TokenInterface::WRONG_CREDENTIALS);
-				}
-			} elseif ($authenticationToken->getAuthenticationStatus() !== TokenInterface::AUTHENTICATION_SUCCESSFUL && $credentials['password'] !== '') {
-
-				$authenticationToken->setAuthenticationStatus(TokenInterface::WRONG_CREDENTIALS);
-			} elseif ($authenticationToken->getAuthenticationStatus() !== TokenInterface::AUTHENTICATION_SUCCESSFUL) {
-				$authenticationToken->setAuthenticationStatus(TokenInterface::NO_CREDENTIALS_GIVEN);
-			}
-
-			return;
-		} elseif (!is_array($credentials) || !isset($credentials['token'])) {
+		if (!is_array($credentials) || !isset($credentials['token'])) {
 			$authenticationToken->setAuthenticationStatus(TokenInterface::NO_CREDENTIALS_GIVEN);
 			return;
 		}
@@ -104,9 +80,11 @@ class PersistedApiTokenProvider extends PersistedUsernamePasswordProvider {
 		}
 
 		// TODO check further JWT properties (e.g. expiration date, client IP, ...)
-		$this->securityContext->withoutAuthorizationChecks(function() use ($payload, &$account) {
-			$account = $this->accountRepository->findActiveByAccountIdentifierAndAuthenticationProviderName($payload['accountIdentifier'], $this->name);
-		});
+		if ($credentials['user_agent'] === $payload['user_agent']) {
+			$this->securityContext->withoutAuthorizationChecks(function() use ($payload, &$account) {
+				$account = $this->accountRepository->findActiveByAccountIdentifierAndAuthenticationProviderName($payload['accountIdentifier'], $this->name);
+			});
+		}
 
 		if ($account === NULL) {
 			$authenticationToken->setAuthenticationStatus(TokenInterface::WRONG_CREDENTIALS);

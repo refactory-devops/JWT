@@ -1,0 +1,9 @@
+TYPO3:
+  Flow:
+    security:
+      authentication:
+        providers:
+          'BackendProvider':
+            provider: 'RFY\JsonApi\Authenticator\Security\Authentication\Provider\PersistedApiTokenProvider'
+            token: 'RFY\JsonApi\Authenticator\Security\Authentication\Token\ApiToken'
+            entryPoint: 'HttpBasic'
