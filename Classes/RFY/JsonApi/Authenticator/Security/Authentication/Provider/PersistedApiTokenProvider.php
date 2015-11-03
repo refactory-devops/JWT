@@ -35,6 +35,12 @@ class PersistedApiTokenProvider extends AbstractProvider {
 	protected $securityContext;
 
 	/**
+	 * @var array
+	 * @Flow\InjectConfiguration(path="signature")
+	 */
+	protected $signature;
+
+	/**
 	 * Returns the class names of the tokens this provider can authenticate.
 	 *
 	 * @return array
@@ -65,15 +71,15 @@ class PersistedApiTokenProvider extends AbstractProvider {
 			return;
 		}
 
-		$hmac = $this->hashService->generateHmac('token');
+		$hmac = $this->hashService->generateHmac($this->signature);
 
 		$payload = NULL;
-
 		try {
-			$payload = (array)JWT::decode($credentials['token'], $hmac);
+			$payload = (array)JWT::decode($credentials['token'], $hmac, array('HS256'));
 		} catch (\Exception $exception) {
 			$authenticationToken->setAuthenticationStatus(TokenInterface::WRONG_CREDENTIALS);
 		}
+
 		if ($payload === NULL || !isset($payload['accountIdentifier'])) {
 			$authenticationToken->setAuthenticationStatus(TokenInterface::WRONG_CREDENTIALS);
 			return;
@@ -85,12 +91,34 @@ class PersistedApiTokenProvider extends AbstractProvider {
 			});
 		}
 
-		if ($account === NULL) {
-			$authenticationToken->setAuthenticationStatus(TokenInterface::WRONG_CREDENTIALS);
+		if (is_object($account) && $this->verifyDates($account, $payload)) {
+			$authenticationToken->setAuthenticationStatus(TokenInterface::AUTHENTICATION_SUCCESSFUL);
+			$authenticationToken->setAccount($account);
 			return;
 		}
 
-		$authenticationToken->setAuthenticationStatus(TokenInterface::AUTHENTICATION_SUCCESSFUL);
-		$authenticationToken->setAccount($account);
+		$authenticationToken->setAuthenticationStatus(TokenInterface::WRONG_CREDENTIALS);
+		return;
+	}
+
+	/**
+	 * @param Account $account
+	 * @param array $payload
+	 * @return bool
+	 */
+	protected function verifyDates($account, $payload) {
+		if ($account->getCreationDate() instanceof \DateTime) {
+			if ($payload['creationDate'] !== $account->getCreationDate()->getTimestamp()) {
+				return false;
+			}
+		}
+
+		if ($account->getExpirationDate() instanceof \DateTime) {
+			if ($payload['expirationDate'] !== $account->getExpirationDate()->getTimestamp()) {
+				return false;
+			}
+		}
+
+		return true;
 	}
 }

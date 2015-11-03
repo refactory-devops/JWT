@@ -6,11 +6,11 @@ namespace RFY\JsonApi\Authenticator\Controller;
  *                                                                        *
  *                                                                        */
 
-use RFY\JsonApi\Authenticator\TokenFactory;
 use TYPO3\Flow\Annotations as Flow;
 use TYPO3\Flow\Security\Authentication\Controller\AbstractAuthenticationController;
 use TYPO3\Flow\Security\Authentication\TokenInterface;
 use TYPO3\Flow\Security\Exception\AuthenticationRequiredException;
+use RFY\JsonApi\Authenticator\Security\Authentication\Factory\TokenFactory;
 use TYPO3\Flow\Mvc\View\JsonView;
 
 /**
@@ -65,7 +65,7 @@ class TokenController extends AbstractAuthenticationController {
 	 * @return string
 	 */
 	protected function onAuthenticationSuccess(\TYPO3\Flow\Mvc\ActionRequest $originalRequest = NULL) {
-		$tokenFactory = new TokenFactory($this->request);
+		$tokenFactory = new TokenFactory($this->request->getHttpRequest());
 
 		$this->view->assign('value', array('token' => $tokenFactory->getJWTToken()));
 	}
@@ -95,9 +95,6 @@ class TokenController extends AbstractAuthenticationController {
 		));
 
 		if ($this->request->getHttpRequest()->getMethod() !== 'OPTIONS') {
-			if ($this->response->getStatus() === '401') {
-				\TYPO3\Flow\var_dump('ALREADY 401');
-			}
 			$this->response->setStatus(401);
 		}
 	}

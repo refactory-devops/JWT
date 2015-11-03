@@ -3,8 +3,6 @@
 [![Test Coverage](https://codeclimate.com/github/rfyio/RFY.JsonApi.Authenticator/badges/coverage.svg)](https://codeclimate.com/github/rfyio/RFY.JsonApi.Authenticator/coverage)
 [![Build Status](https://travis-ci.org/rfyio/RFY.JsonApi.Authenticator.svg)](https://travis-ci.org/rfyio/RFY.JsonApi.Authenticator)
 
-## Working in progress.....
-
 This package is meant to make a TOKEN authentication possible for any request authentication attempt.
 
 The possible responses are:

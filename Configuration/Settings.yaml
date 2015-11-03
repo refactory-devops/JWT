@@ -7,3 +7,8 @@ TYPO3:
             provider: 'RFY\JsonApi\Authenticator\Security\Authentication\Provider\PersistedApiTokenProvider'
             token: 'RFY\JsonApi\Authenticator\Security\Authentication\Token\ApiToken'
             entryPoint: 'HttpBasic'
+
+RFY:
+  JsonApi:
+    Authenticator:
+      signature: 'JSON-API JWT token'
