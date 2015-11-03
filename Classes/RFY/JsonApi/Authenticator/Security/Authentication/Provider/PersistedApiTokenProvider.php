@@ -79,8 +79,7 @@ class PersistedApiTokenProvider extends AbstractProvider {
 			return;
 		}
 
-		// TODO check further JWT properties (e.g. expiration date, client IP, ...)
-		if ($credentials['user_agent'] === $payload['user_agent']) {
+		if ($credentials['user_agent'] === $payload['user_agent'] && $credentials['ip_address'] === $payload['ip_address']) {
 			$this->securityContext->withoutAuthorizationChecks(function() use ($payload, &$account) {
 				$account = $this->accountRepository->findActiveByAccountIdentifierAndAuthenticationProviderName($payload['accountIdentifier'], $this->name);
 			});

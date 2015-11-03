@@ -23,20 +23,20 @@ To incluse this package into your TYPO3 Flow application just run:
 
 Add the below YAML to the projects `Configuration/Routes.yaml`:
 
-```
-	-
-	  name: 'Token'
-	  uriPattern: '<TokenSubroutes>'
-	  defaults:
-	    '@format': 'json'
-	  subRoutes:
-	    TokenSubroutes:
-	      package: RFY.JsonApi.Authenticator
+```yaml
+-
+  name: 'Token'
+  uriPattern: '<TokenSubroutes>'
+  defaults:
+    '@format': 'json'
+  subRoutes:
+    TokenSubroutes:
+      package: RFY.JsonApi.Authenticator
 ```
 
 By default the security features are enabled in this package by these settings:
 
-```
+```yaml
 TYPO3:
   Flow:
     security:
@@ -47,9 +47,13 @@ TYPO3:
             token: 'TYPO3\Flow\Security\Authentication\Token\UsernamePasswordHttpBasic'
             entryPoint: 'HttpBasic'
 ```
+You of course overwrite these settings based on your wishes.
+ 
 
 
 ### Intended Features:
+
+- Optional security params checked, like creationDate, expirationDate & IP-Address.
 
 ### References:
 
