@@ -59,10 +59,12 @@ You of course overwrite these settings based on your wishes.
 
 This implementation is requires the [Firebase JWT package](https://github.com/firebase/php-jwt).
 
-Authors:
---------
-
+#### Authors:
 Author: Sebastiaan van Parijs (<svparijs@refactory.it>)
+
+#### Feedback & Reviews:
+
+Reviewer: Bastian Waidelich
 
 License:
 --------
