@@ -7,6 +7,12 @@ use TYPO3\Flow\Http\Request;
 use TYPO3\Flow\Security\Cryptography\HashService;
 use Firebase\JWT\JWT;
 
+/**
+ * Class TokenFactory
+ *
+ * @package RFY\JsonApi\Authenticator\Domain\Factory
+ * @Flow\Scope("singleton")
+ */
 class TokenFactory {
 
 	/**

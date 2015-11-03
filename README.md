@@ -5,7 +5,7 @@
 
 ## Working in progress.....
 
-This package is meant to make a POST authentication possible for any Json based authentication attempt.
+This package is meant to make a TOKEN authentication possible for any request authentication attempt.
 
 The possible responses are:
 
@@ -42,9 +42,9 @@ TYPO3:
     security:
       authentication:
         providers:
-          'HttpBasicProvider':
-            provider: 'PersistedUsernamePasswordProvider'
-            token: 'TYPO3\Flow\Security\Authentication\Token\UsernamePasswordHttpBasic'
+          'BackendProvider':
+            provider: 'RFY\JsonApi\Authenticator\Security\Authentication\Provider\PersistedApiTokenProvider'
+            token: 'RFY\JsonApi\Authenticator\Security\Authentication\Token\ApiToken'
             entryPoint: 'HttpBasic'
 ```
 You of course overwrite these settings based on your wishes.
