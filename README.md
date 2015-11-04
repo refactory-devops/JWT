@@ -17,7 +17,7 @@ To start using this package you will need to do the following steps:
 
 To incluse this package into your TYPO3 Flow application just run:
 
-	composer require rfy/jsonapi/authenticator
+	composer require rfy/jsonapi-authenticator
 
 Add the below YAML to the projects `Configuration/Routes.yaml`:
 
