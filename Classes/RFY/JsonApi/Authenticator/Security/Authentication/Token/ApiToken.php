@@ -34,13 +34,13 @@ class ApiToken extends AbstractToken implements SessionlessTokenInterface {
 
 		if (substr($authorizationHeader, 0, 5) === 'Token') {
 			$this->credentials['token'] = substr($authorizationHeader, 6);
-			$this->credentials['user_agent'] = $actionRequest->getHttpRequest()->getHeader('HTTP_USER_AGENT');
+			$this->credentials['user_agent'] = $actionRequest->getHttpRequest()->getHeader('User-Agent');
 			$this->credentials['ip_address'] = $actionRequest->getHttpRequest()->getClientIpAddress();
 			$this->setAuthenticationStatus(self::AUTHENTICATION_NEEDED);
 			return;
 		} elseif ($apiTokenCookie !== NULL) {
 			$this->credentials['token'] = $apiTokenCookie;
-			$this->credentials['user_agent'] = $actionRequest->getHttpRequest()->getHeader('HTTP_USER_AGENT');
+			$this->credentials['user_agent'] = $actionRequest->getHttpRequest()->getHeader('User-Agent');
 			$this->credentials['ip_address'] = $actionRequest->getHttpRequest()->getClientIpAddress();
 			$this->setAuthenticationStatus(self::AUTHENTICATION_NEEDED);
 			return;

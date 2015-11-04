@@ -95,7 +95,7 @@ class TokenFactory {
 
 		$payload['identifier'] = $this->persistenceManager->getIdentifierByObject($account);
 		$payload['accountIdentifier'] = $account->getAccountIdentifier();
-		$payload['user_agent'] = $this->request->getHeader('HTTP_USER_AGENT');
+		$payload['user_agent'] = $this->request->getHeader('User-Agent');
 		$payload['ip_address'] = $this->request->getClientIpAddress();
 
 		if ($account->getCreationDate() instanceof \DateTime) {
