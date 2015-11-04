@@ -26,10 +26,6 @@ class ApiToken extends AbstractToken implements SessionlessTokenInterface {
 	public function updateCredentials(ActionRequest $actionRequest) {
 		$apiTokenCookie = $actionRequest->getHttpRequest()->getCookie('token');
 
-		if ($actionRequest->getHttpRequest()->getMethod() === 'OPTIONS') {
-			return;
-		}
-
 		$authorizationHeader = $actionRequest->getHttpRequest()->getHeaders()->get('Authorization');
 
 		if (substr($authorizationHeader, 0, 5) === 'Token') {
