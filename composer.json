@@ -4,7 +4,7 @@
     "description": "A authentication provider based on POST which replies in JSON",
     "require": {
         "typo3/flow": "3.*",
-        "firebase/php-jwt": "~3.*"
+        "firebase/php-jwt": "3.*"
     },
     "autoload": {
         "psr-0": {
