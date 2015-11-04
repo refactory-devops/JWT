@@ -2,6 +2,7 @@
     "name": "rfy/jsonapi-authenticator",
     "type": "typo3-flow-package",
     "description": "A authentication provider based on POST which replies in JSON",
+    "license": "MIT",
     "require": {
         "typo3/flow": "3.*",
         "firebase/php-jwt": "3.*"
