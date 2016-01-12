@@ -1,5 +1,5 @@
 <?php
-namespace RFY\JsonApi\Authenticator\Controller;
+namespace RFY\JWT\Controller;
 
 /*                                                                        *
  * This script belongs to the TYPO3 Flow package "RFY.JsonApi.Authenticator".*
@@ -7,10 +7,11 @@ namespace RFY\JsonApi\Authenticator\Controller;
  *                                                                        */
 
 use TYPO3\Flow\Annotations as Flow;
+use TYPO3\Flow\Exception;
 use TYPO3\Flow\Security\Authentication\Controller\AbstractAuthenticationController;
 use TYPO3\Flow\Security\Authentication\TokenInterface;
 use TYPO3\Flow\Security\Exception\AuthenticationRequiredException;
-use RFY\JsonApi\Authenticator\Security\Authentication\Factory\TokenFactory;
+use RFY\JWT\Security\Authentication\Factory\TokenFactory;
 use TYPO3\Flow\Mvc\View\JsonView;
 
 /**
@@ -48,12 +49,12 @@ class TokenController extends AbstractAuthenticationController {
 	 *
 	 */
 	public function initializeAuthenticateAction() {
-		$this->response->setHeader('Access-Control-Allow-Headers', 'Authorization');
 		$this->response->setHeader('Access-Control-Allow-Origin', '*');
 
 		if ($this->request->getHttpRequest()->getMethod() === 'OPTIONS') {
+			echo 'OPTIONS??';
+			$this->response->setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 			$this->response->setStatus(204);
-
 			return '';
 		}
 	}

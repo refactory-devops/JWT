@@ -13,9 +13,9 @@ The possible responses are:
 
 ## Getting started
 
-To start using this package you will need to do the following steps:
+To start using this package you will need to follow the following steps:
 
-To incluse this package into your TYPO3 Flow application just run:
+Include this package into your TYPO3 Flow application by running:
 
 	composer require rfy/jsonapi-authenticator
 
@@ -46,7 +46,23 @@ TYPO3:
             entryPoint: 'HttpBasic'
 ```
 You of course overwrite these settings based on your wishes.
- 
+
+## Example use case
+Currently I use this in combination with the `UsernamePasswordHttpBasic` token, so you authenticate the first time with your username and password.
+This will result in a JSON response containing the JWT Authentication Token which you set as a cookie, Authorization header or argument for each following request.
+
+```yaml
+TYPO3:
+  Flow:
+    security:
+      authentication:
+        providers:
+          'HttpBasicProvider':
+            provider: 'PersistedUsernamePasswordProvider'
+            token: 'TYPO3\Flow\Security\Authentication\Token\UsernamePasswordHttpBasic'
+            entryPoint: 'HttpBasic'
+```
+
 
 
 ### Intended Features:
@@ -55,7 +71,7 @@ You of course overwrite these settings based on your wishes.
 
 ### References:
 
-This implementation is requires the [Firebase JWT package](https://github.com/firebase/php-jwt).
+This implementation requires the [Firebase JWT package](https://github.com/firebase/php-jwt).
 
 #### Authors:
 Author: Sebastiaan van Parijs (<svparijs@refactory.it>)
@@ -66,7 +82,7 @@ Reviewer: Bastian Waidelich
 
 License:
 --------
-Copyright 2015 Sebastiaan van Parijs
+Copyright 2015 Refactory
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the

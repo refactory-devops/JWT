@@ -1,8 +1,26 @@
 -
-  name: 'Authenticate'
+  name: 'Api Token Authenticate'
   uriPattern: 'token'
   defaults:
-    '@package':    'RFY.JsonApi.Authenticator'
+    '@package':    'RFY.JWT'
+    '@controller': 'Token'
+    '@action':     'authenticate'
+    '@format':     'json'
+
+-
+  name: 'Api Token Authenticate'
+  uriPattern: 'api-token'
+  defaults:
+    '@package':    'RFY.JWT'
+    '@controller': 'Token'
+    '@action':     'authenticate'
+    '@format':     'json'
+
+-
+  name: 'Api Token Refresh'
+  uriPattern: 'api-token-refresh'
+  defaults:
+    '@package':    'RFY.JWT'
     '@controller': 'Token'
     '@action':     'authenticate'
     '@format':     'json'

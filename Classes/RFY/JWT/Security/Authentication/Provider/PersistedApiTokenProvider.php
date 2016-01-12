@@ -1,5 +1,5 @@
 <?php
-namespace RFY\JsonApi\Authenticator\Security\Authentication\Provider;
+namespace RFY\JWT\Security\Authentication\Provider;
 
 use TYPO3\Flow\Annotations as Flow;
 use TYPO3\Flow\Security\Account;
@@ -8,7 +8,7 @@ use TYPO3\Flow\Security\Authentication\TokenInterface;
 use TYPO3\Flow\Security\Cryptography\HashService;
 use TYPO3\Flow\Security\Exception\UnsupportedAuthenticationTokenException;
 
-use RFY\JsonApi\Authenticator\Security\Authentication\Token\ApiToken;
+use RFY\JWT\Security\Authentication\Token\JwtToken;
 use Firebase\JWT\JWT;
 
 /**
@@ -46,7 +46,7 @@ class PersistedApiTokenProvider extends AbstractProvider {
 	 * @return array
 	 */
 	public function getTokenClassNames() {
-		return array('RFY\JsonApi\Authenticator\Security\Authentication\Token\ApiToken');
+		return array('RFY\JWT\Security\Authentication\Token\JwtToken');
 	}
 
 	/**
@@ -58,7 +58,7 @@ class PersistedApiTokenProvider extends AbstractProvider {
 	 * @throws UnsupportedAuthenticationTokenException
 	 */
 	public function authenticate(TokenInterface $authenticationToken) {
-		if (!($authenticationToken instanceof ApiToken)) {
+		if (!($authenticationToken instanceof JwtToken)) {
 			throw new UnsupportedAuthenticationTokenException('This provider cannot authenticate the given token.', 1417040168);
 		}
 
@@ -80,14 +80,26 @@ class PersistedApiTokenProvider extends AbstractProvider {
 			$authenticationToken->setAuthenticationStatus(TokenInterface::WRONG_CREDENTIALS);
 		}
 
-		if ($payload === NULL || !isset($payload['accountIdentifier'])) {
-			$authenticationToken->setAuthenticationStatus(TokenInterface::WRONG_CREDENTIALS);
-			return;
+		if (isset($credentials['username'])) {
+			$providerName = $this->name;
+			$accountRepository = $this->accountRepository;
+			$this->securityContext->withoutAuthorizationChecks(function() use ($credentials, $providerName, $accountRepository, &$account) {
+				$account = $accountRepository->findActiveByAccountIdentifierAndAuthenticationProviderName($credentials['username'], $providerName);
+			});
+
+			if ($this->hashService->validatePassword($credentials['password'], $account->getCredentialsSource())) {
+				$authenticationToken->setAuthenticationStatus(TokenInterface::AUTHENTICATION_SUCCESSFUL);
+				$authenticationToken->setAccount($account);
+				return;
+			} else {
+				$authenticationToken->setAuthenticationStatus(TokenInterface::WRONG_CREDENTIALS);
+				return;
+			}
 		}
 
 		if ($credentials['user_agent'] === $payload['user_agent'] && $credentials['ip_address'] === $payload['ip_address']) {
 			$this->securityContext->withoutAuthorizationChecks(function() use ($payload, &$account) {
-				$account = $this->accountRepository->findActiveByAccountIdentifierAndAuthenticationProviderName($payload['accountIdentifier'], $this->name);
+				$account = $this->accountRepository->findActiveByAccountIdentifierAndAuthenticationProviderName($payload['identifier'], $this->name);
 			});
 		}
 

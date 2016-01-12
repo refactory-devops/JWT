@@ -1,5 +1,5 @@
 <?php
-namespace RFY\JsonApi\Authenticator\Security\Authentication\Token;
+namespace RFY\JWT\Security\Authentication\Token;
 
 use TYPO3\Flow\Annotations as Flow;
 use TYPO3\Flow\Mvc\ActionRequest;
@@ -9,7 +9,7 @@ use TYPO3\Flow\Security\Authentication\Token\SessionlessTokenInterface;
 /**
  * An authentication token used for simple username and password authentication.
  */
-class ApiToken extends AbstractToken implements SessionlessTokenInterface {
+class JwtToken extends AbstractToken implements SessionlessTokenInterface {
 
 	/**
 	 * The jwt credentials
@@ -24,18 +24,20 @@ class ApiToken extends AbstractToken implements SessionlessTokenInterface {
 	 * @return void
 	 */
 	public function updateCredentials(ActionRequest $actionRequest) {
-		$apiTokenCookie = $actionRequest->getHttpRequest()->getCookie('token');
+		if ($actionRequest->getHttpRequest()->getMethod() === 'OPTIONS') {
+			return;
+		}
 
 		$authorizationHeader = $actionRequest->getHttpRequest()->getHeaders()->get('Authorization');
+		$authorizationArguments = $actionRequest->getArguments();
 
-		if (substr($authorizationHeader, 0, 5) === 'Token') {
-			$this->credentials['token'] = substr($authorizationHeader, 6);
-			$this->credentials['user_agent'] = $actionRequest->getHttpRequest()->getHeader('User-Agent');
-			$this->credentials['ip_address'] = $actionRequest->getHttpRequest()->getClientIpAddress();
+		if (isset($authorizationArguments['username']) && isset($authorizationArguments['password'])) {
+			$this->credentials['username'] = $authorizationArguments['username'];
+			$this->credentials['password'] = $authorizationArguments['password'];
 			$this->setAuthenticationStatus(self::AUTHENTICATION_NEEDED);
 			return;
-		} elseif ($apiTokenCookie !== NULL) {
-			$this->credentials['token'] = $apiTokenCookie;
+		} elseif (substr($authorizationHeader, 0, 6) === 'Bearer') {
+			$this->credentials['token'] = substr($authorizationHeader, 7);
 			$this->credentials['user_agent'] = $actionRequest->getHttpRequest()->getHeader('User-Agent');
 			$this->credentials['ip_address'] = $actionRequest->getHttpRequest()->getClientIpAddress();
 			$this->setAuthenticationStatus(self::AUTHENTICATION_NEEDED);

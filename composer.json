@@ -1,5 +1,5 @@
 {
-    "name": "rfy/jsonapi-authenticator",
+    "name": "rfy/jwt",
     "type": "typo3-flow-package",
     "description": "A authentication provider based on POST which replies in JSON",
     "license": "MIT",
@@ -9,7 +9,7 @@
     },
     "autoload": {
         "psr-0": {
-            "RFY\\JsonApi\\Authenticator": "Classes"
+            "RFY\\JWT": "Classes"
         }
     },
     "require-dev": {

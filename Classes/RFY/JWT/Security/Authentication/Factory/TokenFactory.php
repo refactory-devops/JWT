@@ -1,7 +1,7 @@
 <?php
-namespace RFY\JsonApi\Authenticator\Security\Authentication\Factory;
+namespace RFY\JWT\Security\Authentication\Factory;
 
-use RFY\JsonApi\Authenticator\Security\Authentication\Token\ApiToken;
+use RFY\JWT\Security\Authentication\Token\JwtToken;
 use TYPO3\Flow\Annotations as Flow;
 
 use TYPO3\Flow\Exception;
@@ -13,7 +13,7 @@ use TYPO3\Flow\Utility\Algorithms;
 /**
  * Class TokenFactory
  *
- * @package RFY\JsonApi\Authenticator\Domain\Factory
+ * @package RFY\JWT\Domain\Factory
  * @Flow\Scope("singleton")
  */
 class TokenFactory {
@@ -60,7 +60,7 @@ class TokenFactory {
 	protected $request;
 
 	/**
-	 * @var ApiToken
+	 * @var JwtToken
 	 */
 	protected $apiToken;
 
@@ -79,7 +79,7 @@ class TokenFactory {
 		/** @var \TYPO3\Flow\Security\Account $account */
 		$account = $this->securityContext->getAccount();
 
-		$this->apiToken = $this->securityContext->getAuthenticationTokensOfType('RFY\JsonApi\Authenticator\Security\Authentication\Token\ApiToken')[0];
+		$this->apiToken = $this->securityContext->getAuthenticationTokensOfType('RFY\JWT\Security\Authentication\Token\JwtToken')[0];
 
 		if ($account->getAuthenticationProviderName() !== $this->apiToken->getAuthenticationProviderName()) {
 
@@ -94,7 +94,7 @@ class TokenFactory {
 		$payload = array();
 
 		$payload['identifier'] = $this->persistenceManager->getIdentifierByObject($account);
-		$payload['accountIdentifier'] = $account->getAccountIdentifier();
+		$payload['partyIdentifier'] = $this->persistenceManager->getIdentifierByObject($account->getParty());
 		$payload['user_agent'] = $this->request->getHeader('User-Agent');
 		$payload['ip_address'] = $this->request->getClientIpAddress();
 
