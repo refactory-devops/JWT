@@ -41,8 +41,8 @@ TYPO3:
       authentication:
         providers:
           'BackendProvider':
-            provider: 'RFY\JsonApi\Authenticator\Security\Authentication\Provider\PersistedApiTokenProvider'
-            token: 'RFY\JsonApi\Authenticator\Security\Authentication\Token\ApiToken'
+            provider: 'RFY\JWT\Security\Authentication\Provider\PersistedApiTokenProvider'
+            token: 'RFY\JWT\Security\Authentication\Token\ApiToken'
             entryPoint: 'HttpBasic'
 ```
 You of course overwrite these settings based on your wishes.
