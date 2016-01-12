@@ -11,7 +11,7 @@
 		timeoutForSmallTests="0">
 	<testsuites>
 		<testsuite name="All tests">
-			<directory>../../../Packages/Application/RFY.JsonApi.Authenticator/Tests/Unit</directory>
+			<directory>../../../Packages/Application/RFY.JWT/Tests/Unit</directory>
 			<exclude>../../../Packages/Libraries</exclude>
 		</testsuite>
 	</testsuites>

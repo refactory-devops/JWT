@@ -10,18 +10,18 @@ matrix:
 
 addons:
   code_climate:
-    repo_token: 388cf1b7e33410b59c447a91c1be71b945a7f7b7dc1c1c705f3b217b5c1ecb5e
+    repo_token: fccfe91d5ccd044b18f67fe21ce26760aa29979e969779358e75a7e43df57b5e
 
 before_install:
   - cd ..
   - git clone https://github.com/neos/flow-base-distribution.git
   - cd flow-base-distribution
-  - git checkout 2.3
+  - git checkout 3.1
   - composer update
   - composer require codeclimate/php-test-reporter:dev-master --dev
 install:
   - mkdir -p Packages/Application
-  - mv ../RFY.JsonApi.Authenticator Packages/Application
+  - mv ../RFY.JWT Packages/Application
 script:
   - bin/phpunit -c Packages/Application/RFY.JWT/UnitTests.xml --coverage-clover build/logs/clover.xml
   - bin/phpunit --stop-on-failure -c Packages/Application/RFY.JWT/UnitTests.xml --testsuite "RFY.JWT tests"
