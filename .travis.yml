@@ -1,9 +1,7 @@
 language: php
 php:
-  - 5.5
-  - 5.5.9
   - 5.6
-  - hhvm
+  - 7.0
 matrix:
   allow_failures:
     - php: hhvm
@@ -13,7 +11,7 @@ addons:
     repo_token: fccfe91d5ccd044b18f67fe21ce26760aa29979e969779358e75a7e43df57b5e
 
 before_install:
-  - cd ..
+  - cd ../..
   - git clone https://github.com/neos/flow-base-distribution.git
   - cd flow-base-distribution
   - git checkout 3.1
@@ -21,7 +19,7 @@ before_install:
   - composer require codeclimate/php-test-reporter:dev-master --dev
 install:
   - mkdir -p Packages/Application
-  - mv ../RFY.JWT Packages/Application
+  - mv ../RFY/JWT Packages/Application/RFY.JWT
 script:
   - bin/phpunit -c Packages/Application/RFY.JWT/UnitTests.xml --coverage-clover build/logs/clover.xml
   - bin/phpunit --stop-on-failure -c Packages/Application/RFY.JWT/UnitTests.xml --testsuite "RFY.JWT tests"
