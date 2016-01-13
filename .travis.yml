@@ -12,8 +12,9 @@ addons:
 
 before_install:
   - ls -la
-  - cd ../..
+  - cd ../../..
   - git clone https://github.com/neos/flow-base-distribution.git
+  - ls -la
   - cd flow-base-distribution
   - git checkout 3.1
   - composer update
@@ -23,6 +24,7 @@ install:
   - mkdir -p Packages/Application
   - mv ../RFY/JWT Packages/Application/RFY.JWT
 script:
+  - ls -la
   - bin/phpunit -c Packages/Application/RFY.JWT/UnitTests.xml --coverage-clover build/logs/clover.xml
   - bin/phpunit --stop-on-failure -c Packages/Application/RFY.JWT/UnitTests.xml --testsuite "RFY.JWT tests"
   - cd Packages/Application/RFY.JWT
