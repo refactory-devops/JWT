@@ -11,6 +11,7 @@ addons:
     repo_token: fccfe91d5ccd044b18f67fe21ce26760aa29979e969779358e75a7e43df57b5e
 
 before_install:
+  - ls -la
   - cd ../..
   - git clone https://github.com/neos/flow-base-distribution.git
   - cd flow-base-distribution
@@ -18,6 +19,7 @@ before_install:
   - composer update
   - composer require codeclimate/php-test-reporter:dev-master --dev
 install:
+  - ls -la
   - mkdir -p Packages/Application
   - mv ../RFY/JWT Packages/Application/RFY.JWT
 script:
