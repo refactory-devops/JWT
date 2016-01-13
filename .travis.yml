@@ -12,7 +12,8 @@ addons:
 
 before_install:
   - ls -la
-  - cd ../../..
+  - cd ../..
+  - ls -la
   - git clone https://github.com/neos/flow-base-distribution.git
   - ls -la
   - cd flow-base-distribution
@@ -21,8 +22,8 @@ before_install:
   - composer require codeclimate/php-test-reporter:dev-master --dev
 install:
   - ls -la
-  - mkdir -p Packages/Application
-  - mv ../RFY/JWT Packages/Application/RFY.JWT
+  - mkdir -p Packages/Application/RFY.JWT
+  - mv ../RFY/JWT Packages/Application/RFY.JWT/
 script:
   - ls -la
   - bin/phpunit -c Packages/Application/RFY.JWT/UnitTests.xml --coverage-clover build/logs/clover.xml
