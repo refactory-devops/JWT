@@ -1,6 +1,7 @@
 # RFY.JsonApi.Authenticator
-[![Code Climate](https://codeclimate.com/github/rfyio/RFY.JsonApi.Authenticator/badges/gpa.svg)](https://codeclimate.com/github/rfyio/RFY.JsonApi.Authenticator)
-[![Test Coverage](https://codeclimate.com/github/rfyio/RFY.JsonApi.Authenticator/badges/coverage.svg)](https://codeclimate.com/github/rfyio/RFY.JsonApi.Authenticator/coverage)
+[![Latest Version on Packagist][ico-version]][link-packagist]
+[![Code Climate](https://codeclimate.com/github/rfyio/JWT/badges/gpa.svg)](https://codeclimate.com/github/rfyio/JWT)
+[![Test Coverage](https://codeclimate.com/github/rfyio/JWT/badges/coverage.svg)](https://codeclimate.com/github/rfyio/JWT/coverage)
 [![Build Status](https://travis-ci.org/rfyio/RFY.JsonApi.Authenticator.svg)](https://travis-ci.org/rfyio/RFY.JsonApi.Authenticator)
 
 This package is meant to make a TOKEN authentication possible for any request authentication attempt.
