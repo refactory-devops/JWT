@@ -1,7 +1,7 @@
 # RFY.JWT
 [![Code Climate](https://codeclimate.com/github/rfyio/JWT/badges/gpa.svg)](https://codeclimate.com/github/rfyio/JWT)
 [![Test Coverage](https://codeclimate.com/github/rfyio/JWT/badges/coverage.svg)](https://codeclimate.com/github/rfyio/JWT/coverage)
-[![Build Status](https://travis-ci.org/rfyio/RFY.JWT.svg)](https://travis-ci.org/rfyio/RFY.JWT)
+[![Build Status](https://travis-ci.org/rfyio/JWT.svg?branch=master)](https://travis-ci.org/rfyio/JWT)
 
 This package is meant to make a TOKEN authentication possible for any request authentication attempt.
 
