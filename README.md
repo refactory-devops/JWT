@@ -1,10 +1,7 @@
-# RFY.JsonApi.Authenticator
-[![Latest Version on Packagist][ico-version]][link-packagist]
+# RFY.JWT
 [![Code Climate](https://codeclimate.com/github/rfyio/JWT/badges/gpa.svg)](https://codeclimate.com/github/rfyio/JWT)
 [![Test Coverage](https://codeclimate.com/github/rfyio/JWT/badges/coverage.svg)](https://codeclimate.com/github/rfyio/JWT/coverage)
-[![Build Status](https://travis-ci.org/rfyio/RFY.JsonApi.Authenticator.svg)](https://travis-ci.org/rfyio/RFY.JsonApi.Authenticator)
-[![Software License][ico-license]](LICENSE.md)
-[![Total Downloads][ico-downloads]][link-downloads]
+[![Build Status](https://travis-ci.org/rfyio/RFY.JWT.svg)](https://travis-ci.org/rfyio/RFY.JWT)
 
 This package is meant to make a TOKEN authentication possible for any request authentication attempt.
 
@@ -20,7 +17,7 @@ To start using this package you will need to follow the following steps:
 
 Include this package into your TYPO3 Flow application by running:
 
-	composer require rfy/jsonapi-authenticator
+	composer require rfy/jwt
 
 Add the below YAML to the projects `Configuration/Routes.yaml`:
 
@@ -32,7 +29,7 @@ Add the below YAML to the projects `Configuration/Routes.yaml`:
     '@format': 'json'
   subRoutes:
     TokenSubroutes:
-      package: RFY.JsonApi.Authenticator
+      package: RFY.JWT
 ```
 
 By default the security features are enabled in this package by these settings:
@@ -49,26 +46,6 @@ TYPO3:
             entryPoint: 'HttpBasic'
 ```
 You of course overwrite these settings based on your wishes.
-
-## Example use case
-Currently I use this in combination with the `UsernamePasswordHttpBasic` token, so you authenticate the first time with your username and password.
-This will result in a JSON response containing the JWT Authentication Token which you set as a cookie, Authorization header or argument for each following request.
-
-```yaml
-TYPO3:
-  Flow:
-    security:
-      authentication:
-        providers:
-          'HttpBasicProvider':
-            provider: 'PersistedUsernamePasswordProvider'
-            token: 'TYPO3\Flow\Security\Authentication\Token\UsernamePasswordHttpBasic'
-            entryPoint: 'HttpBasic'
-```
-
-### Intended Features:
-
-- Optional security params checked, like creationDate, expirationDate & IP-Address.
 
 ### References:
 

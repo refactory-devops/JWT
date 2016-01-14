@@ -9,6 +9,5 @@ TYPO3:
             entryPoint: 'HttpBasic'
 
 RFY:
-  JsonApi:
-    Authenticator:
-      signature: 'JSON-API JWT token'
+  JWT:
+    signature: 'JSON-API JWT token'
