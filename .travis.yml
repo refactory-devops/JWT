@@ -18,14 +18,10 @@ before_install:
   - composer update
   - composer require codeclimate/php-test-reporter:dev-master --dev
 install:
-  - ls -la
   - mkdir -p Packages/Application/RFY.JWT
   - mv ../JWT/* Packages/Application/RFY.JWT
-  - ls -la Packages/Application/RFY.JWT
 script:
   - bin/phpunit -c Packages/Application/RFY.JWT/UnitTests.xml --coverage-clover build/logs/clover.xml
   - bin/phpunit --stop-on-failure -c Packages/Application/RFY.JWT/UnitTests.xml --testsuite "RFY.JWT tests"
-  - ls -la
   - cd Packages/Application/RFY.JWT
-  - ls -la
   - ../../../bin/test-reporter
