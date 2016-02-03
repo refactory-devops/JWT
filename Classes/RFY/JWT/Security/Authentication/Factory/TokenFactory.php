@@ -93,7 +93,7 @@ class TokenFactory {
 
 		$payload = array();
 
-		$payload['identifier'] = $this->persistenceManager->getIdentifierByObject($account);
+		$payload['identifier'] =  $account->getAccountIdentifier();
 		$payload['partyIdentifier'] = $this->persistenceManager->getIdentifierByObject($account->getParty());
 		$payload['user_agent'] = $this->request->getHeader('User-Agent');
 		$payload['ip_address'] = $this->request->getClientIpAddress();

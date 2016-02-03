@@ -103,7 +103,7 @@ class PersistedApiTokenProvider extends AbstractProvider {
 			});
 		}
 
-		if (is_object($account) && $this->verifyDates($account, $payload)) {
+		if (is_object($account)) {
 			$authenticationToken->setAuthenticationStatus(TokenInterface::AUTHENTICATION_SUCCESSFUL);
 			$authenticationToken->setAccount($account);
 			return;
@@ -111,26 +111,5 @@ class PersistedApiTokenProvider extends AbstractProvider {
 
 		$authenticationToken->setAuthenticationStatus(TokenInterface::WRONG_CREDENTIALS);
 		return;
-	}
-
-	/**
-	 * @param Account $account
-	 * @param array $payload
-	 * @return bool
-	 */
-	protected function verifyDates($account, $payload) {
-		if ($account->getCreationDate() instanceof \DateTime) {
-			if ($payload['creationDate'] !== $account->getCreationDate()->getTimestamp()) {
-				return false;
-			}
-		}
-
-		if ($account->getExpirationDate() instanceof \DateTime) {
-			if ($payload['expirationDate'] !== $account->getExpirationDate()->getTimestamp()) {
-				return false;
-			}
-		}
-
-		return true;
 	}
 }
