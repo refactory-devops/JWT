@@ -52,7 +52,6 @@ class TokenController extends AbstractAuthenticationController {
 		$this->response->setHeader('Access-Control-Allow-Origin', '*');
 
 		if ($this->request->getHttpRequest()->getMethod() === 'OPTIONS') {
-			echo 'OPTIONS??';
 			$this->response->setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 			$this->response->setStatus(204);
 			return '';
