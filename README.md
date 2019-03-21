@@ -15,7 +15,7 @@ The possible responses are:
 
 To start using this package you will need to follow the following steps:
 
-Include this package into your TYPO3 Flow application by running:
+Include this package into your Neos Flow application by running:
 
 	composer require rfy/jwt
 
@@ -35,7 +35,7 @@ Add the below YAML to the projects `Configuration/Routes.yaml`:
 By default the security features are enabled in this package by these settings:
 
 ```yaml
-TYPO3:
+Neos:
   Flow:
     security:
       authentication:

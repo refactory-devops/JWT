@@ -14,7 +14,7 @@ before_install:
   - cd ..
   - git clone https://github.com/neos/flow-base-distribution.git
   - cd flow-base-distribution
-  - git checkout 3.1
+  - git checkout 5.2
   - composer update
   - composer require codeclimate/php-test-reporter:dev-master --dev
 install:
