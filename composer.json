@@ -1,6 +1,6 @@
 {
   "name": "rfy/jwt",
-  "type": "flow-package",
+  "type": "neos-package",
   "description": "A JWT authentication provider based on Firebase JWT package",
   "license": "MIT",
   "require": {
@@ -16,6 +16,9 @@
     "codeclimate/php-test-reporter": "dev-master"
   },
   "extra": {
+    "neos": {
+      "package-key": "RFY.JWT"
+    },
     "applied-flow-migrations": [
       "Neos.FLOW3-201201261636",
       "Neos.Fluid-201205031303",
