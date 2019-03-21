@@ -1,6 +1,6 @@
 {
     "name": "rfy/jwt",
-    "type": "typo3-flow-package",
+    "type": "neos-flow-package",
     "description": "A authentication provider based on POST which replies in JSON",
     "license": "MIT",
     "require": {
