@@ -44,7 +44,13 @@ class TokenFactory
     protected $accountFactory;
 
     /**
-     * @var array
+     * @Flow\Inject
+     * @var \Neos\Party\Domain\Repository\PartyRepository
+     */
+    protected $partyRepository;
+
+    /**
+     * @var string
      * @Flow\InjectConfiguration(path="signature")
      */
     protected $signature;
@@ -63,7 +69,7 @@ class TokenFactory
     /**
      * @var JwtToken
      */
-    protected $apiToken;
+    protected $jwtToken;
 
     /**
      * @param $request
@@ -84,12 +90,12 @@ class TokenFactory
         /** @var \Neos\Flow\Security\Account $account */
         $account = $this->securityContext->getAccount();
 
-        $this->apiToken = $this->securityContext->getAuthenticationTokensOfType('RFY\JWT\Security\Authentication\Token\JwtToken')[0];
+        $this->jwtToken = $this->securityContext->getAuthenticationTokensOfType('RFY\JWT\Security\Authentication\Token\JwtToken')[0];
 
-        if ($account->getAuthenticationProviderName() !== $this->apiToken->getAuthenticationProviderName()) {
+        if ($account->getAuthenticationProviderName() !== $this->jwtToken->getAuthenticationProviderName()) {
 
             // TODO: Currently you can get only 1 tokenAccount because of the duplication restraint based on accountIdentifier & AuthenticationProviderName
-            $account = $this->accountRepository->findActiveByAccountIdentifierAndAuthenticationProviderName($account->getAccountIdentifier(), $this->apiToken->getAuthenticationProviderName());
+            $account = $this->accountRepository->findActiveByAccountIdentifierAndAuthenticationProviderName($account->getAccountIdentifier(), $this->jwtToken->getAuthenticationProviderName());
 
             if ($account === NULL) {
                 $account = $this->generateTokenAccount();
@@ -99,9 +105,9 @@ class TokenFactory
         $payload = array();
 
         $payload['identifier'] = $account->getAccountIdentifier();
-        $payload['partyIdentifier'] = $this->persistenceManager->getIdentifierByObject($account->getParty());
+        $payload['partyIdentifier'] = $this->persistenceManager->getIdentifierByObject($this->partyRepository->findOneHavingAccount($account));
         $payload['user_agent'] = $this->request->getHeader('User-Agent');
-        $payload['ip_address'] = $this->request->getClientIpAddress();
+        $payload['ip_address'] = $this->request->getAttribute(Request::ATTRIBUTE_CLIENT_IP);
 
         if ($account->getCreationDate() instanceof \DateTime) {
             $payload['creationDate'] = $account->getCreationDate()->getTimestamp();

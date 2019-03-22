@@ -36,7 +36,13 @@ class PersistedApiTokenProvider extends AbstractProvider
     protected $securityContext;
 
     /**
-     * @var array
+     * @var \Neos\Flow\Persistence\PersistenceManagerInterface
+     * @Flow\Inject
+     */
+    protected $persistenceManager;
+
+    /**
+     * @var string
      * @Flow\InjectConfiguration(path="signature")
      */
     protected $signature;
@@ -67,7 +73,7 @@ class PersistedApiTokenProvider extends AbstractProvider
         }
 
         /** @var $account Account */
-        $account = NULL;
+        $account = null;
         $credentials = $authenticationToken->getCredentials();
 
         if (!\is_array($credentials) || !isset($credentials['token'])) {
@@ -91,9 +97,20 @@ class PersistedApiTokenProvider extends AbstractProvider
                 $account = $accountRepository->findActiveByAccountIdentifierAndAuthenticationProviderName($credentials['username'], $providerName);
             });
 
+            $authenticationToken->setAuthenticationStatus(TokenInterface::WRONG_CREDENTIALS);
+
+            if ($account === null) {
+                // validate the account anyways (with a dummy salt) in order to prevent timing attacks on this provider
+                $this->hashService->validatePassword($credentials['password'], 'bcrypt=>$2a$16$RW.NZM/uP3mC8rsXKJGuN.2pG52thRp5w39NFO.ShmYWV7mJQp0rC');
+                return;
+            }
+
             if ($this->hashService->validatePassword($credentials['password'], $account->getCredentialsSource())) {
+                $account->authenticationAttempted(TokenInterface::AUTHENTICATION_SUCCESSFUL);
                 $authenticationToken->setAuthenticationStatus(TokenInterface::AUTHENTICATION_SUCCESSFUL);
                 $authenticationToken->setAccount($account);
+                $this->accountRepository->update($account);
+                $this->persistenceManager->whitelistObject($account);
                 return;
             } else {
                 $authenticationToken->setAuthenticationStatus(TokenInterface::WRONG_CREDENTIALS);

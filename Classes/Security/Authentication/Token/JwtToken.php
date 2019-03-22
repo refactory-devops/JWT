@@ -3,6 +3,7 @@
 namespace RFY\JWT\Security\Authentication\Token;
 
 use Neos\Flow\Annotations as Flow;
+use Neos\Flow\Http\Request;
 use Neos\Flow\Mvc\ActionRequest;
 use Neos\Flow\Security\Authentication\Token\AbstractToken;
 use Neos\Flow\Security\Authentication\Token\SessionlessTokenInterface;
@@ -32,18 +33,25 @@ class JwtToken extends AbstractToken implements SessionlessTokenInterface
             return;
         }
 
-        $authorizationHeader = $actionRequest->getHttpRequest()->getHeaders()->get('Authorization');
-        $authorizationArguments = $actionRequest->getArguments();
+        $body = $actionRequest->getHttpRequest()->getBody();
+        $contentType = $actionRequest->getHttpRequest()->getHeaders()->get('Content-Type');
 
-        if (isset($authorizationArguments['username']) && isset($authorizationArguments['password'])) {
-            $this->credentials['username'] = $authorizationArguments['username'];
-            $this->credentials['password'] = $authorizationArguments['password'];
-            $this->setAuthenticationStatus(self::AUTHENTICATION_NEEDED);
-            return;
-        } elseif (\substr($authorizationHeader, 0, 6) === 'Bearer') {
+        $authorizationArguments = \json_decode($body);
+        if ($contentType === 'application/json' && \json_last_error() === JSON_ERROR_NONE) {
+            if (isset($authorizationArguments->{'username'}) && isset($authorizationArguments->{'password'})) {
+                $this->credentials['username'] = $authorizationArguments->{'username'};
+                $this->credentials['password'] = $authorizationArguments->{'password'};
+                $this->setAuthenticationStatus(self::AUTHENTICATION_NEEDED);
+                return;
+            }
+        }
+
+        $authorizationHeader = $actionRequest->getHttpRequest()->getHeaders()->get('Authorization');
+
+        if (\substr($authorizationHeader, 0, 6) === 'Bearer') {
             $this->credentials['token'] = \substr($authorizationHeader, 7);
             $this->credentials['user_agent'] = $actionRequest->getHttpRequest()->getHeader('User-Agent');
-            $this->credentials['ip_address'] = $actionRequest->getHttpRequest()->getClientIpAddress();
+            $this->credentials['ip_address'] = $actionRequest->getHttpRequest()->getAttribute(Request::ATTRIBUTE_CLIENT_IP);
             $this->setAuthenticationStatus(self::AUTHENTICATION_NEEDED);
             return;
         } else {

@@ -55,7 +55,7 @@ class TokenController extends AbstractAuthenticationController
 
         if ($this->request->getHttpRequest()->getMethod() === 'OPTIONS') {
             $this->response->setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-            $this->response->setStatus(204);
+            $this->response->withStatus(204);
             return '';
         }
     }
@@ -65,6 +65,8 @@ class TokenController extends AbstractAuthenticationController
      *
      * @param \Neos\Flow\Mvc\ActionRequest|NULL $originalRequest The request that was intercepted by the security framework, NULL if there was none
      * @return string|void
+     * @throws \Neos\Flow\Exception
+     * @throws \Neos\Flow\Persistence\Exception\IllegalObjectTypeException
      * @throws \Neos\Flow\Security\Exception\InvalidArgumentForHashGenerationException
      */
     protected function onAuthenticationSuccess(\Neos\Flow\Mvc\ActionRequest $originalRequest = NULL)
