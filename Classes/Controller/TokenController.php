@@ -65,15 +65,12 @@ class TokenController extends AbstractAuthenticationController
      *
      * @param \Neos\Flow\Mvc\ActionRequest|NULL $originalRequest The request that was intercepted by the security framework, NULL if there was none
      * @return string|void
-     * @throws \Neos\Flow\Exception
-     * @throws \Neos\Flow\Persistence\Exception\IllegalObjectTypeException
-     * @throws \Neos\Flow\Security\Exception\InvalidArgumentForHashGenerationException
      */
     protected function onAuthenticationSuccess(\Neos\Flow\Mvc\ActionRequest $originalRequest = NULL)
     {
         $tokenFactory = new TokenFactory($this->request->getHttpRequest());
 
-        $this->view->assign('value', array('token' => $tokenFactory->getJWTToken()));
+        $this->view->assign('value', ['token' => $tokenFactory->getJsonWebToken()]);
     }
 
     /**
@@ -96,10 +93,11 @@ class TokenController extends AbstractAuthenticationController
         $locale = $this->localizationService->getConfiguration()->getCurrentLocale();
         $package = $this->controllerContext->getRequest()->getControllerPackageKey();
 
-        $this->view->assign('value', array(
-            'responseText' => $this->translator->translateById('authentication.response.' . $responseIdentifier, array(), NULL, $locale, 'Main', $package),
-            'responseIdentifier' => $responseIdentifier
-        ));
+        $this->view->assign('value', [
+                'responseText' => $this->translator->translateById('authentication.response.' . $responseIdentifier, [], null, $locale, 'Main', $package),
+                'responseIdentifier' => $responseIdentifier
+            ]
+        );
 
         if ($this->request->getHttpRequest()->getMethod() !== 'OPTIONS') {
             $this->response->setStatus(401);

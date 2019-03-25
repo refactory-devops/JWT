@@ -1,0 +1,9 @@
+RFY\JWT\Security\KeyProvider:
+  properties:
+    cache:
+      object:
+        factoryObjectName: Neos\Flow\Cache\CacheManager
+        factoryMethodName: getCache
+        arguments:
+          1:
+            value: RFY_JWT_Security_KeyCache

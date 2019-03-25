@@ -23,42 +23,62 @@ class JwtToken extends AbstractToken implements SessionlessTokenInterface
     protected $credentials = array('token' => '');
 
     /**
+     * @var array
+     * @Flow\InjectConfiguration(path="tokenSources")
+     */
+    protected $tokenSources;
+
+    /**
      * @param ActionRequest $actionRequest The current action request
-     * @return bool|void
+     * @return bool
      * @throws \Neos\Flow\Security\Exception\InvalidAuthenticationStatusException
      */
     public function updateCredentials(ActionRequest $actionRequest)
     {
-        if ($actionRequest->getHttpRequest()->getMethod() === 'OPTIONS') {
-            return;
-        }
 
-        $body = $actionRequest->getHttpRequest()->getBody();
-        $contentType = $actionRequest->getHttpRequest()->getHeaders()->get('Content-Type');
+        // TODO: might need to update this
+//        if ($actionRequest->getHttpRequest()->getMethod() === 'OPTIONS') {
+//            return;
+//        }
 
-        $authorizationArguments = \json_decode($body);
-        if ($contentType === 'application/json' && \json_last_error() === JSON_ERROR_NONE) {
-            if (isset($authorizationArguments->{'username'}) && isset($authorizationArguments->{'password'})) {
-                $this->credentials['username'] = $authorizationArguments->{'username'};
-                $this->credentials['password'] = $authorizationArguments->{'password'};
-                $this->setAuthenticationStatus(self::AUTHENTICATION_NEEDED);
-                return;
+        $httpRequest = $actionRequest->getHttpRequest();
+        $token = null;
+
+        foreach ($this->tokenSources as $tokenSource) {
+            $name = $tokenSource['name'];
+            if ($tokenSource['from'] === 'header') {
+                if ($httpRequest->hasHeader($name)) {
+                    $token = $httpRequest->getHeader($name);
+                    break;
+                }
+            } elseif ($tokenSource['from'] === 'cookie') {
+                if ($httpRequest->hasCookie($name)) {
+                    $token = $httpRequest->getCookie($name)->getValue();
+                    break;
+                }
+            } elseif ($tokenSource['from'] === 'query') {
+                if ($httpRequest->hasArgument($name)) {
+                    $token = $httpRequest->getArgument($name);
+                    break;
+                }
             }
         }
 
-        $authorizationHeader = $actionRequest->getHttpRequest()->getHeaders()->get('Authorization');
-
-        if (\substr($authorizationHeader, 0, 6) === 'Bearer') {
-            $this->credentials['token'] = \substr($authorizationHeader, 7);
-            $this->credentials['user_agent'] = $actionRequest->getHttpRequest()->getHeader('User-Agent');
-            $this->credentials['ip_address'] = $actionRequest->getHttpRequest()->getAttribute(Request::ATTRIBUTE_CLIENT_IP);
+        if (NULL !== $token) {
+            $this->credentials['encoded'] = $token;
             $this->setAuthenticationStatus(self::AUTHENTICATION_NEEDED);
-            return;
-        } else {
-            $this->credentials = array('token' => NULL);
-            $this->authenticationStatus = self::NO_CREDENTIALS_GIVEN;
-            return;
+            return true;
         }
+
+        $this->setAuthenticationStatus(self::NO_CREDENTIALS_GIVEN);
+        return false;
+    }
+
+    /**
+     * @return string
+     */
+    public function getEncodedJwt() {
+        return $this->credentials['encoded'];
     }
 
     /**

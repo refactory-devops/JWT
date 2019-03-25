@@ -1,15 +1,6 @@
 -
   name: 'Api Token Authenticate'
-  uriPattern: 'token'
-  defaults:
-    '@package':    'RFY.JWT'
-    '@controller': 'Token'
-    '@action':     'authenticate'
-    '@format':     'json'
-
--
-  name: 'Api Token Authenticate'
-  uriPattern: 'api-token'
+  uriPattern: 'authentication/token-auth'
   defaults:
     '@package':    'RFY.JWT'
     '@controller': 'Token'

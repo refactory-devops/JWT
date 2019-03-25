@@ -4,10 +4,19 @@ Neos:
       authentication:
         providers:
           DefaultProvider:
-            provider: 'RFY\JWT\Security\Authentication\Provider\PersistedApiTokenProvider'
-            token: 'RFY\JWT\Security\Authentication\Token\JwtToken'
+            provider: 'RFY\JWT\Security\Authentication\Provider\JsonWebAuthenticationProvider'
+            token: 'RFY\JWT\Security\Authentication\Token\JsonWebToken'
             entryPoint: 'HttpBasic'
+          JwtAuthenticationProvider:
+            provider: 'RFY\JWT\Security\Authentication\Provider\JwtAuthenticationProvider'
+            token: 'RFY\JWT\Security\Authentication\Token\JwtToken'
 
 RFY:
   JWT:
-    signature: 'JSON-API JWT token'
+    key: ~
+    algorithms:
+      - HS256
+    tokenSources:
+      - from: header
+        name: Authorization
+    claimMapping: []
