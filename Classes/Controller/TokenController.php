@@ -47,15 +47,21 @@ class TokenController extends AbstractAuthenticationController
     protected $localizationService;
 
     /**
+     * @var array
+     * @Flow\InjectConfiguration(package="RFY.JWT", path="response.headers")
+     */
+    protected $responseHeaders;
+
+    /**
      *
      */
     public function initializeAuthenticateAction()
     {
-        $this->response->setHeader('Access-Control-Allow-Origin', '*');
+        $this->response = $this->response->withHeader('Access-Control-Allow-Origin', $this->responseHeaders['Access-Control-Allow-Origin']);
 
         if ($this->request->getHttpRequest()->getMethod() === 'OPTIONS') {
-            $this->response->setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-            $this->response->withStatus(204);
+            $this->response = $this->response->withHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+            $this->response = $this->response->withStatus(204);
             return '';
         }
     }
@@ -100,7 +106,7 @@ class TokenController extends AbstractAuthenticationController
         );
 
         if ($this->request->getHttpRequest()->getMethod() !== 'OPTIONS') {
-            $this->response->setStatus(401);
+            $this->response = $this->response->withStatus(401);
         }
     }
 

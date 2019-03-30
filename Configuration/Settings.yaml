@@ -13,6 +13,9 @@ Neos:
 
 RFY:
   JWT:
+    response:
+      headers:
+        'Access-Control-Allow-Origin': '*'
     key: ~
     algorithms:
       - HS256
