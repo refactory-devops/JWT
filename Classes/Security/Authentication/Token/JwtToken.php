@@ -35,12 +35,6 @@ class JwtToken extends AbstractToken implements SessionlessTokenInterface
      */
     public function updateCredentials(ActionRequest $actionRequest)
     {
-
-        // TODO: might need to update this
-//        if ($actionRequest->getHttpRequest()->getMethod() === 'OPTIONS') {
-//            return;
-//        }
-
         $httpRequest = $actionRequest->getHttpRequest();
         $token = null;
 
