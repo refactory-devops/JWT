@@ -4,13 +4,11 @@ namespace RFY\JWT\Security\Authentication\Provider;
 
 use Firebase\JWT\ExpiredException;
 use Neos\Flow\Annotations as Flow;
-use Neos\Flow\Log\PsrSystemLoggerInterface;
 use Neos\Flow\Security\Account;
 use Neos\Flow\Security\Authentication\Provider\AbstractProvider;
 use Neos\Flow\Security\Authentication\TokenInterface;
 use Neos\Flow\Security\Exception\UnsupportedAuthenticationTokenException;
 use Neos\Flow\Security\Policy\PolicyService;
-use RFY\JWT\Security\KeyProvider;
 use RFY\JWT\Security\Authentication\Token\JwtToken;
 use RFY\JWT\Security\JwtAccount;
 use RFY\JWT\Service\JwtService;
@@ -20,13 +18,6 @@ use RFY\JWT\Service\JwtService;
  */
 class JwtAuthenticationProvider extends AbstractProvider
 {
-
-    /**
-     * @var KeyProvider
-     * @Flow\Inject
-     */
-    protected $keyProvider;
-
     /**
      * @var array
      * @Flow\InjectConfiguration(path="claimMapping")
@@ -40,16 +31,16 @@ class JwtAuthenticationProvider extends AbstractProvider
     protected $jwtService;
 
     /**
-     * @var PsrSystemLoggerInterface
-     * @Flow\Inject
-     */
-    protected $systemLogger;
-
-    /**
      * @var PolicyService
      * @Flow\Inject
      */
     protected $policyService;
+
+    /**
+     * @Flow\Inject
+     * @var \Neos\Party\Domain\Repository\PartyRepository
+     */
+    protected $partyRepository;
 
     /**
      * Returns the class names of the tokens this provider can authenticate.
@@ -59,17 +50,6 @@ class JwtAuthenticationProvider extends AbstractProvider
     public function getTokenClassNames()
     {
         return [JwtToken::class];
-    }
-
-    /**
-     * Returns true if the given token can be authenticated by this provider
-     *
-     * @param TokenInterface $token The token that should be authenticated
-     * @return boolean true if the given token class can be authenticated by this provider
-     */
-    public function canAuthenticate(TokenInterface $token): bool
-    {
-        return ($token instanceof JwtToken);
     }
 
     /**
@@ -98,19 +78,19 @@ class JwtAuthenticationProvider extends AbstractProvider
         try {
             $encoded = $authenticationToken->getEncodedJwt();
             $claims = $this->jwtService->decodeJsonWebToken($encoded);
+            // todo check expirationdate
         } catch (ExpiredException $expired) {
             $authenticationToken->setAuthenticationStatus(TokenInterface::WRONG_CREDENTIALS);
             return;
         } catch (\Exception $err) {
-            $this->systemLogger->error($err->getMessage());
             $authenticationToken->setAuthenticationStatus(TokenInterface::WRONG_CREDENTIALS);
             return;
         }
 
         $account = new JwtAccount();
         $account->setClaims($claims);
-//        $account->setAccountIdentifier($claims->sub);
         $account->setAuthenticationProviderName('JwtAuthenticationProvider');
+        $account->setParty($this->partyRepository->findByIdentifier($claims->{'party-identifier'}));
 
         $rolesClaim = $this->claimMapping['roles'];
         foreach ($rolesClaim as $key => $roleClaim) {

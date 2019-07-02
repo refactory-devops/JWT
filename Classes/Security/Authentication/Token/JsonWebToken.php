@@ -24,10 +24,10 @@ class JsonWebToken extends AbstractToken implements SessionlessTokenInterface
 
     /**
      * @param ActionRequest $actionRequest The current action request
-     * @return bool|void
+     * @return void
      * @throws \Neos\Flow\Security\Exception\InvalidAuthenticationStatusException
      */
-    public function updateCredentials(ActionRequest $actionRequest)
+    public function updateCredentials(ActionRequest $actionRequest): void
     {
         if ($actionRequest->getHttpRequest()->getMethod() === 'OPTIONS') {
             return;
@@ -45,20 +45,6 @@ class JsonWebToken extends AbstractToken implements SessionlessTokenInterface
                 return;
             }
         }
-
-//        $authorizationHeader = $actionRequest->getHttpRequest()->getHeaders()->get('Authorization');
-//
-//        if (\substr($authorizationHeader, 0, 6) === 'Bearer') {
-//            $this->credentials['token'] = \substr($authorizationHeader, 7);
-//            $this->credentials['user_agent'] = $actionRequest->getHttpRequest()->getHeader('User-Agent');
-//            $this->credentials['ip_address'] = $actionRequest->getHttpRequest()->getAttribute(Request::ATTRIBUTE_CLIENT_IP);
-//            $this->setAuthenticationStatus(self::AUTHENTICATION_NEEDED);
-//            return;
-//        } else {
-//            $this->credentials = array('token' => NULL);
-//            $this->authenticationStatus = self::NO_CREDENTIALS_GIVEN;
-//            return;
-//        }
     }
 
     /**

@@ -30,10 +30,10 @@ class JwtToken extends AbstractToken implements SessionlessTokenInterface
 
     /**
      * @param ActionRequest $actionRequest The current action request
-     * @return bool
+     * @return void
      * @throws \Neos\Flow\Security\Exception\InvalidAuthenticationStatusException
      */
-    public function updateCredentials(ActionRequest $actionRequest)
+    public function updateCredentials(ActionRequest $actionRequest): void
     {
         $httpRequest = $actionRequest->getHttpRequest();
         $token = null;
@@ -43,6 +43,9 @@ class JwtToken extends AbstractToken implements SessionlessTokenInterface
             if ($tokenSource['from'] === 'header') {
                 if ($httpRequest->hasHeader($name)) {
                     $token = $httpRequest->getHeader($name);
+                    if (\strpos($token, 'Bearer ') === 0) {
+                        $token = \substr($token, 7);
+                    }
                     break;
                 }
             } elseif ($tokenSource['from'] === 'cookie') {
@@ -59,20 +62,21 @@ class JwtToken extends AbstractToken implements SessionlessTokenInterface
         }
 
         if (NULL !== $token) {
-            $this->credentials['encoded'] = $token;
+            $this->credentials['token'] = $token;
             $this->setAuthenticationStatus(self::AUTHENTICATION_NEEDED);
-            return true;
+            return;
         }
 
         $this->setAuthenticationStatus(self::NO_CREDENTIALS_GIVEN);
-        return false;
+        return;
     }
 
     /**
      * @return string
      */
-    public function getEncodedJwt() {
-        return $this->credentials['encoded'];
+    public function getEncodedJwt()
+    {
+        return $this->credentials['token'];
     }
 
     /**
@@ -82,6 +86,6 @@ class JwtToken extends AbstractToken implements SessionlessTokenInterface
      */
     public function __toString()
     {
-        return 'TOKEN: "' . \substr($this->credentials['token'], 0, 30) . '..."';
+        return 'JWT: "' . \substr($this->credentials['token'], 0, 30) . '..."';
     }
 }
