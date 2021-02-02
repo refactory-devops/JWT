@@ -50,7 +50,7 @@ final class SetJwtTokenComponent implements ComponentInterface
     public function handle(ComponentContext $componentContext): void
     {
         if (!$this->securityContext->isInitialized() && !$this->securityContext->canBeInitialized()) {
-            $this->logger->debug(sprintf('JWT package: (%s) Cannot send JWT because the security context could not be initialized.', get_class($this)));
+            $this->logger->debug(\sprintf('JWT package: (%s) Cannot send JWT because the security context could not be initialized.', \get_class($this)));
             return;
         }
         if (!$this->isJWTAuthentication()) {
@@ -60,7 +60,7 @@ final class SetJwtTokenComponent implements ComponentInterface
 
         $account = $this->securityContext->getAccountByAuthenticationProviderName($this->options['authenticationProviderName']);
         if ($account === null) {
-            $this->logger->info(sprintf('JWT package: (%s) No Flow account found for %s, removing JWT cookie.', \get_class($this), $this->options['authenticationProviderName']));
+            $this->logger->info(\sprintf('JWT package: (%s) No Flow account found for %s, removing JWT cookie.', \get_class($this), $this->options['authenticationProviderName']));
             return;
         }
 

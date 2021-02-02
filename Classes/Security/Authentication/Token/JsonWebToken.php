@@ -34,10 +34,10 @@ class JsonWebToken extends AbstractToken implements SessionlessTokenInterface
         }
 
         $body = $actionRequest->getHttpRequest()->getBody();
-        $contentType = $actionRequest->getHttpRequest()->getHeaders()->get('Content-Type');
+        $contentType = $actionRequest->getHttpRequest()->getHeader('Content-Type');
 
         $authorizationArguments = \json_decode($body);
-        if ($contentType === 'application/json' && \json_last_error() === JSON_ERROR_NONE) {
+        if (\in_array('application/json', $contentType) && \json_last_error() === JSON_ERROR_NONE) {
             if (isset($authorizationArguments->{'username'}) && isset($authorizationArguments->{'password'})) {
                 $this->credentials['username'] = $authorizationArguments->{'username'};
                 $this->credentials['password'] = $authorizationArguments->{'password'};

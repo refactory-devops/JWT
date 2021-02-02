@@ -35,7 +35,7 @@ class JwtService
      * @param array $payload
      * @return string
      */
-    public function createJsonWebToken($payload = array())
+    public function createJsonWebToken(array $payload): string
     {
         return JWT::encode($payload, $this->keyProvider->getPublicKey(), $this->algorithms[0]);
     }
@@ -73,7 +73,7 @@ class JwtService
      *
      * @return string
      */
-    public function getCookieName()
+    public function getCookieName(): string
     {
         return $this->getName('cookie');
     }
@@ -83,7 +83,7 @@ class JwtService
      *
      * @return string
      */
-    public function getHeaderName()
+    public function getHeaderName(): string
     {
         return $this->getName('header');
     }
@@ -93,7 +93,7 @@ class JwtService
      *
      * @return string
      */
-    public function getQueryName()
+    public function getQueryName(): string
     {
         return $this->getName('query');
     }
@@ -102,13 +102,12 @@ class JwtService
      * @param string $from
      * @return string
      */
-    protected function getName($from)
+    protected function getName($from): string
     {
         foreach ($this->tokenSources as $tokenSource) {
             $name = $tokenSource['name'];
             if ($tokenSource['from'] == $from) {
                 return $name;
-                break;
             }
         }
         return '';

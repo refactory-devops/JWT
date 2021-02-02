@@ -3,7 +3,6 @@
 namespace RFY\JWT\Security\Authentication\Token;
 
 use Neos\Flow\Annotations as Flow;
-use Neos\Flow\Http\Request;
 use Neos\Flow\Mvc\ActionRequest;
 use Neos\Flow\Security\Authentication\Token\AbstractToken;
 use Neos\Flow\Security\Authentication\Token\SessionlessTokenInterface;
@@ -20,7 +19,7 @@ class JwtToken extends AbstractToken implements SessionlessTokenInterface
      * @var array
      * @Flow\Transient
      */
-    protected $credentials = array('token' => '');
+    protected $credentials = ['token' => ''];
 
     /**
      * @var array
@@ -42,7 +41,7 @@ class JwtToken extends AbstractToken implements SessionlessTokenInterface
             $name = $tokenSource['name'];
             if ($tokenSource['from'] === 'header') {
                 if ($httpRequest->hasHeader($name)) {
-                    $token = $httpRequest->getHeader($name);
+                    $token = $httpRequest->getHeader($name)[0];
                     if (\strpos($token, 'Bearer ') === 0) {
                         $token = \substr($token, 7);
                     }
@@ -68,7 +67,6 @@ class JwtToken extends AbstractToken implements SessionlessTokenInterface
         }
 
         $this->setAuthenticationStatus(self::NO_CREDENTIALS_GIVEN);
-        return;
     }
 
     /**

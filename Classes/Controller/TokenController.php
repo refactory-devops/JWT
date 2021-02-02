@@ -2,17 +2,19 @@
 
 namespace RFY\JWT\Controller;
 
-/*                                                                        *
+/*                                                                          *
  * This script belongs to the Neos Flow package "RFY.JsonApi.Authenticator".*
- *                                                                        *
- *                                                                        */
+ *                                                                          *
+ *                                                                          */
 
 use Neos\Flow\Annotations as Flow;
 
+use Neos\Flow\Http\Component\SetHeaderComponent;
+use Neos\Flow\Mvc\View\JsonView;
 use Neos\Flow\Security\Authentication\Controller\AbstractAuthenticationController;
-use Neos\Flow\Security\Authentication\TokenInterface;
 use Neos\Flow\Security\Exception\AuthenticationRequiredException;
 use RFY\JWT\Security\Authentication\Factory\TokenFactory;
+use Neos\Flow\Mvc\ActionRequest;
 
 /**
  * A controller which allows for logging into an application
@@ -25,20 +27,17 @@ class TokenController extends AbstractAuthenticationController
     /**
      * @var array
      */
-    protected $supportedMediaTypes = array('application/json');
+    protected $supportedMediaTypes = ['application/json'];
+
+    /**
+     * @var string
+     */
+    protected $defaultViewObjectName = JsonView::class;
 
     /**
      * @var array
      */
-    protected $viewFormatToObjectNameMap = array(
-        'json' => 'Neos\Flow\Mvc\View\JsonView'
-    );
-
-    /**
-     * @var \Neos\Flow\I18n\Translator
-     * @Flow\Inject
-     */
-    protected $translator;
+    protected $viewFormatToObjectNameMap = ['json' => 'Neos\Flow\Mvc\View\JsonView'];
 
     /**
      * @var \Neos\Flow\I18n\Service
@@ -51,11 +50,10 @@ class TokenController extends AbstractAuthenticationController
      */
     public function initializeAuthenticateAction()
     {
-        $this->response->setHeader('Access-Control-Allow-Origin', '*');
-
+        $this->response->setComponentParameter(SetHeaderComponent::class, 'Access-Control-Allow-Origin', '*');
         if ($this->request->getHttpRequest()->getMethod() === 'OPTIONS') {
-            $this->response->setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-            $this->response->withStatus(204);
+            $this->response->setComponentParameter(SetHeaderComponent::class, 'Access-Control-Allow-Headers', 'Content-Type, Authorization');
+            $this->response->setStatusCode(204);
             return '';
         }
     }
@@ -66,7 +64,7 @@ class TokenController extends AbstractAuthenticationController
      * @param \Neos\Flow\Mvc\ActionRequest|NULL $originalRequest The request that was intercepted by the security framework, NULL if there was none
      * @return string|void
      */
-    protected function onAuthenticationSuccess(\Neos\Flow\Mvc\ActionRequest $originalRequest = NULL)
+    protected function onAuthenticationSuccess(ActionRequest $originalRequest = NULL)
     {
         $tokenFactory = new TokenFactory($this->request->getHttpRequest());
 
@@ -79,28 +77,10 @@ class TokenController extends AbstractAuthenticationController
      * @param AuthenticationRequiredException $exception The exception thrown while the authentication process
      * @return void
      */
-    protected function onAuthenticationFailure(AuthenticationRequiredException $exception = null)
+    protected function onAuthenticationFailure(AuthenticationRequiredException $exception = null): void
     {
-        $responseIdentifier = 0;
-
-        /** @var TokenInterface $token */
-        foreach ($this->authenticationManager->getTokens() as $token) {
-            if ($token->getAuthenticationStatus() > $responseIdentifier) {
-                $responseIdentifier = $token->getAuthenticationStatus();
-            }
-        }
-
-        $locale = $this->localizationService->getConfiguration()->getCurrentLocale();
-        $package = $this->controllerContext->getRequest()->getControllerPackageKey();
-
-        $this->view->assign('value', [
-                'responseText' => $this->translator->translateById('authentication.response.' . $responseIdentifier, [], null, $locale, 'Main', $package),
-                'responseIdentifier' => $responseIdentifier
-            ]
-        );
-
         if ($this->request->getHttpRequest()->getMethod() !== 'OPTIONS') {
-            $this->response->setStatus(401);
+            $this->response->setStatusCode(401);
         }
     }
 

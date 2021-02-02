@@ -149,6 +149,5 @@ class JsonWebAuthenticationProvider extends AbstractProvider
         }
 
         $authenticationToken->setAuthenticationStatus(TokenInterface::WRONG_CREDENTIALS);
-        return;
     }
 }

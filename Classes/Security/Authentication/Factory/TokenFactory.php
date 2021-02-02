@@ -2,13 +2,8 @@
 
 namespace RFY\JWT\Security\Authentication\Factory;
 
-use RFY\JWT\Security\Authentication\Token\JwtToken;
 use Neos\Flow\Annotations as Flow;
-use Neos\Flow\Exception;
-use Neos\Flow\Http\Request;
-use Neos\Flow\Security\Cryptography\HashService;
-use Neos\Flow\Utility\Algorithms;
-use Firebase\JWT\JWT;
+use GuzzleHttp\Psr7\ServerRequest;
 use RFY\JWT\Security\JwtAccount;
 use RFY\JWT\Service\JwtService;
 
@@ -52,7 +47,7 @@ class TokenFactory
     protected $jwtService;
 
     /**
-     * @var Request
+     * @var ServerRequest
      */
     protected $request;
 
@@ -71,11 +66,10 @@ class TokenFactory
     {
         /** @var JwtAccount $account */
         $account = $this->securityContext->getAccount();
-        $payload = [];
-        $payload['identifier'] = $account->getAccountIdentifier();
-        $payload['party-identifier'] = $this->persistenceManager->getIdentifierByObject($account->getParty());
+        $payload['username'] = $account->getAccountIdentifier();
+        $payload['identifier'] = $this->persistenceManager->getIdentifierByObject($account->getParty());
         $payload['user-agent'] = $this->request->getHeader('User-Agent');
-        $payload['ip-address'] = $this->request->getAttribute(Request::ATTRIBUTE_CLIENT_IP);
+        $payload['ip-address'] = $this->request->getAttribute('clientIpAddress');
 
         if ($account->getCreationDate() instanceof \DateTime) {
             $payload['creationDate'] = $account->getCreationDate()->getTimestamp();
@@ -85,7 +79,6 @@ class TokenFactory
         if ($account->getExpirationDate() instanceof \DateTime) {
             $payload['expirationDate'] = $account->getExpirationDate()->getTimestamp();
         }
-
         return $this->jwtService->createJsonWebToken($payload);
     }
 }
