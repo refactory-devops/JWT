@@ -44,14 +44,20 @@ class TokenController extends AbstractAuthenticationController
      * @var Service
      * @Flow\Inject
      */
-    protected Service $localizationService;
+    protected $localizationService;
+
+    /**
+     * @var array
+     * @Flow\InjectConfiguration(package="RFY.JWT", path="response.headers")
+     */
+    protected array $responseHeaders;
 
     /**
      *
      */
-    public function initializeAuthenticateAction(): string
+    public function initializeAuthenticateAction()
     {
-        $this->response->setComponentParameter(SetHeaderComponent::class, 'Access-Control-Allow-Origin', '*');
+        $this->response->setComponentParameter(SetHeaderComponent::class, 'Access-Control-Allow-Origin', $this->responseHeaders['Access-Control-Allow-Origin']);
         if ($this->request->getHttpRequest()->getMethod() === 'OPTIONS') {
             $this->response->setComponentParameter(SetHeaderComponent::class, 'Access-Control-Allow-Headers', 'Content-Type, Authorization');
             $this->response->setStatusCode(204);
@@ -63,12 +69,11 @@ class TokenController extends AbstractAuthenticationController
      * Is called if authentication was successful.
      *
      * @param \Neos\Flow\Mvc\ActionRequest|NULL $originalRequest The request that was intercepted by the security framework, NULL if there was none
-     * @return string|void
+     * @return string
      */
-    protected function onAuthenticationSuccess(ActionRequest $originalRequest = NULL): string
+    protected function onAuthenticationSuccess(ActionRequest $originalRequest = NULL)
     {
         $tokenFactory = new TokenFactory($this->request->getHttpRequest());
-
         $this->view->assign('value', ['token' => $tokenFactory->getJsonWebToken()]);
     }
 
@@ -88,7 +93,8 @@ class TokenController extends AbstractAuthenticationController
     /**
      * Overwrite default behaviour
      */
-    protected function errorAction(): string
+    protected function errorAction()
     {
+        return '';
     }
 }
