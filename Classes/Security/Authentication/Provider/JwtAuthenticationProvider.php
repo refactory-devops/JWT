@@ -22,7 +22,7 @@ class JwtAuthenticationProvider extends AbstractProvider
      * @var array
      * @Flow\InjectConfiguration(path="claimMapping")
      */
-    protected $claimMapping;
+    protected array $claimMapping;
 
     /**
      * @var JwtService
@@ -47,7 +47,7 @@ class JwtAuthenticationProvider extends AbstractProvider
      *
      * @return array
      */
-    public function getTokenClassNames()
+    public function getTokenClassNames(): array
     {
         return [JwtToken::class];
     }
@@ -58,7 +58,7 @@ class JwtAuthenticationProvider extends AbstractProvider
      *
      * @param TokenInterface $authenticationToken The token to be authenticated
      * @throws UnsupportedAuthenticationTokenException
-     * @throws \Neos\Flow\Security\Exception\InvalidAuthenticationStatusException
+     * @throws \Neos\Flow\Security\Exception\InvalidAuthenticationStatusException|\Neos\Flow\Security\Exception\NoSuchRoleException
      */
     public function authenticate(TokenInterface $authenticationToken)
     {

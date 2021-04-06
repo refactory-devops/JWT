@@ -40,7 +40,7 @@ class JwtAccount extends Account
     /**
      * @return AbstractParty
      */
-    public function getParty()
+    public function getParty(): AbstractParty
     {
         return $this->party;
     }
@@ -52,8 +52,8 @@ class JwtAccount extends Account
      */
     public function __call($name, $args)
     {
-        if (substr($name, 0, 3) === 'get') {
-            $name = lcfirst(substr($name, 3));
+        if (\substr($name, 0, 3) === 'get') {
+            $name = \lcfirst(\substr($name, 3));
             return $this->claims->{$name};
         }
         throw new \BadMethodCallException($name . ' is not callable on this object');

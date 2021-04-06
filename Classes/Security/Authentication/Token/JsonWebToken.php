@@ -3,7 +3,6 @@
 namespace RFY\JWT\Security\Authentication\Token;
 
 use Neos\Flow\Annotations as Flow;
-use Neos\Flow\Http\Request;
 use Neos\Flow\Mvc\ActionRequest;
 use Neos\Flow\Security\Authentication\Token\AbstractToken;
 use Neos\Flow\Security\Authentication\Token\SessionlessTokenInterface;

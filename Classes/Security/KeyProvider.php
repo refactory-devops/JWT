@@ -31,7 +31,7 @@ class KeyProvider
     /**
      * @return string
      */
-    public function getPublicKey()
+    public function getPublicKey(): string
     {
         if ($this->key) {
             return $this->key;

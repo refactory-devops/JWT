@@ -16,14 +16,14 @@ class SkipOptionRequests implements RequestPatternInterface
     /**
      * @var array
      */
-    protected $skipMethodsPattern = array();
+    protected array $skipMethodsPattern = array();
 
     /**
      * Returns the set pattern
      *
      * @return array The set pattern
      */
-    public function getPattern()
+    public function getPattern(): array
     {
         return $this->skipMethodsPattern;
     }
@@ -31,7 +31,7 @@ class SkipOptionRequests implements RequestPatternInterface
     /**
      * @param object $skipMethodsPattern
      */
-    public function setPattern($skipMethodsPattern)
+    public function setPattern(object $skipMethodsPattern)
     {
         $this->skipMethodsPattern = $skipMethodsPattern;
     }
@@ -42,7 +42,7 @@ class SkipOptionRequests implements RequestPatternInterface
      * @param \Neos\Flow\Mvc\RequestInterface $request The request that should be matched
      * @return boolean TRUE if the pattern matched, FALSE otherwise
      */
-    public function matchRequest(RequestInterface $request)
+    public function matchRequest(RequestInterface $request): bool
     {
         if (!$request instanceof ActionRequest) {
             return false;

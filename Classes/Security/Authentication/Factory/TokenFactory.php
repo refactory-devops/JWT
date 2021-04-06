@@ -4,6 +4,10 @@ namespace RFY\JWT\Security\Authentication\Factory;
 
 use Neos\Flow\Annotations as Flow;
 use GuzzleHttp\Psr7\ServerRequest;
+use Neos\Flow\Persistence\PersistenceManagerInterface;
+use Neos\Flow\Security\AccountFactory;
+use Neos\Flow\Security\AccountRepository;
+use Neos\Flow\Security\Context;
 use RFY\JWT\Security\JwtAccount;
 use RFY\JWT\Service\JwtService;
 
@@ -17,26 +21,26 @@ class TokenFactory
 {
 
     /**
-     * @var \Neos\Flow\Security\Context
+     * @var Context
      * @Flow\Inject
      */
     protected $securityContext;
 
     /**
      * @Flow\Inject
-     * @var \Neos\Flow\Security\AccountRepository
+     * @var AccountRepository
      */
     protected $accountRepository;
 
     /**
      * @Flow\Inject
-     * @var \Neos\Flow\Security\AccountFactory
+     * @var AccountFactory
      */
     protected $accountFactory;
 
     /**
      * @Flow\Inject
-     * @var \Neos\Flow\Persistence\PersistenceManagerInterface
+     * @var PersistenceManagerInterface
      */
     protected $persistenceManager;
 
@@ -62,7 +66,7 @@ class TokenFactory
     /**
      * @return string
      */
-    public function getJsonWebToken()
+    public function getJsonWebToken(): string
     {
         /** @var JwtAccount $account */
         $account = $this->securityContext->getAccount();

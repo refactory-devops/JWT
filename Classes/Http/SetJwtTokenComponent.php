@@ -33,13 +33,13 @@ final class SetJwtTokenComponent implements ComponentInterface
     /**
      * @var array
      */
-    private $options;
+    private array $options;
 
     /**
      * SetJwtTokenComponent constructor.
-     * @param array|null $options
+     * @param array $options
      */
-    public function __construct(array $options = null)
+    public function __construct(array $options = [])
     {
         $this->options = $options;
     }

@@ -10,6 +10,7 @@ namespace RFY\JWT\Controller;
 use Neos\Flow\Annotations as Flow;
 
 use Neos\Flow\Http\Component\SetHeaderComponent;
+use Neos\Flow\I18n\Service;
 use Neos\Flow\Mvc\View\JsonView;
 use Neos\Flow\Security\Authentication\Controller\AbstractAuthenticationController;
 use Neos\Flow\Security\Exception\AuthenticationRequiredException;
@@ -40,15 +41,15 @@ class TokenController extends AbstractAuthenticationController
     protected $viewFormatToObjectNameMap = ['json' => 'Neos\Flow\Mvc\View\JsonView'];
 
     /**
-     * @var \Neos\Flow\I18n\Service
+     * @var Service
      * @Flow\Inject
      */
-    protected $localizationService;
+    protected Service $localizationService;
 
     /**
      *
      */
-    public function initializeAuthenticateAction()
+    public function initializeAuthenticateAction(): string
     {
         $this->response->setComponentParameter(SetHeaderComponent::class, 'Access-Control-Allow-Origin', '*');
         if ($this->request->getHttpRequest()->getMethod() === 'OPTIONS') {
@@ -64,7 +65,7 @@ class TokenController extends AbstractAuthenticationController
      * @param \Neos\Flow\Mvc\ActionRequest|NULL $originalRequest The request that was intercepted by the security framework, NULL if there was none
      * @return string|void
      */
-    protected function onAuthenticationSuccess(ActionRequest $originalRequest = NULL)
+    protected function onAuthenticationSuccess(ActionRequest $originalRequest = NULL): string
     {
         $tokenFactory = new TokenFactory($this->request->getHttpRequest());
 
@@ -74,7 +75,7 @@ class TokenController extends AbstractAuthenticationController
     /**
      * Is called if authentication failed.
      *
-     * @param AuthenticationRequiredException $exception The exception thrown while the authentication process
+     * @param AuthenticationRequiredException|null $exception The exception thrown while the authentication process
      * @return void
      */
     protected function onAuthenticationFailure(AuthenticationRequiredException $exception = null): void
@@ -87,7 +88,7 @@ class TokenController extends AbstractAuthenticationController
     /**
      * Overwrite default behaviour
      */
-    protected function errorAction()
+    protected function errorAction(): string
     {
     }
 }

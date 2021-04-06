@@ -25,7 +25,7 @@ class JwtToken extends AbstractToken implements SessionlessTokenInterface
      * @var array
      * @Flow\InjectConfiguration(path="tokenSources")
      */
-    protected $tokenSources;
+    protected array $tokenSources;
 
     /**
      * @param ActionRequest $actionRequest The current action request
@@ -47,16 +47,6 @@ class JwtToken extends AbstractToken implements SessionlessTokenInterface
                     }
                     break;
                 }
-            } elseif ($tokenSource['from'] === 'cookie') {
-                if ($httpRequest->hasCookie($name)) {
-                    $token = $httpRequest->getCookie($name)->getValue();
-                    break;
-                }
-            } elseif ($tokenSource['from'] === 'query') {
-                if ($httpRequest->hasArgument($name)) {
-                    $token = $httpRequest->getArgument($name);
-                    break;
-                }
             }
         }
 
@@ -72,7 +62,7 @@ class JwtToken extends AbstractToken implements SessionlessTokenInterface
     /**
      * @return string
      */
-    public function getEncodedJwt()
+    public function getEncodedJwt(): string
     {
         return $this->credentials['token'];
     }

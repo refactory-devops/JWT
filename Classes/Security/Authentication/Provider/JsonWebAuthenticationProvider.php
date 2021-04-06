@@ -65,7 +65,7 @@ class JsonWebAuthenticationProvider extends AbstractProvider
      *
      * @return array
      */
-    public function getTokenClassNames()
+    public function getTokenClassNames(): array
     {
         return [JsonWebToken::class];
     }

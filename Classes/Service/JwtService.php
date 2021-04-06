@@ -17,13 +17,13 @@ class JwtService
      * @Flow\InjectConfiguration(path="algorithms")
      * @var array
      */
-    protected $algorithms = [];
+    protected array $algorithms = [];
 
     /**
      * @Flow\InjectConfiguration(path="tokenSources")
      * @var array
      */
-    protected $tokenSources = [];
+    protected array $tokenSources = [];
 
     /**
      * @var KeyProvider
@@ -44,7 +44,7 @@ class JwtService
      * @param string $encodedJWT
      * @return object
      */
-    public function decodeJsonWebToken($encodedJWT)
+    public function decodeJsonWebToken($encodedJWT): object
     {
         return JWT::decode($encodedJWT, $this->keyProvider->getPublicKey(), $this->algorithms);
     }
@@ -54,7 +54,7 @@ class JwtService
      * @return null|object
      * @throws \Neos\Flow\Security\Exception\InvalidAuthenticationStatusException
      */
-    public function decodeJsonWebTokenFromRequest(ActionRequest $request)
+    public function decodeJsonWebTokenFromRequest(ActionRequest $request): ?object
     {
         $claims = null;
         $jwtToken = new JwtToken();
@@ -102,7 +102,7 @@ class JwtService
      * @param string $from
      * @return string
      */
-    protected function getName($from): string
+    protected function getName(string $from): string
     {
         foreach ($this->tokenSources as $tokenSource) {
             $name = $tokenSource['name'];
