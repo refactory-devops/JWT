@@ -7,3 +7,8 @@ RFY\JWT\Security\KeyProvider:
         arguments:
           1:
             value: RFY_JWT_Security_KeyCache
+
+RFY\JWT\Http\SetJwtTokenMiddleware:
+  arguments:
+    1:
+      value: 'JwtAuthenticationProvider'

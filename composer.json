@@ -4,8 +4,8 @@
   "description": "A JWT authentication provider based on Firebase JWT package",
   "license": "MIT",
   "require": {
-    "neos/flow": "6.2.*",
-    "firebase/php-jwt": "5.2.*"
+    "neos/flow": "^7.0",
+    "firebase/php-jwt": "^5.2"
   },
   "autoload": {
     "psr-4": {
