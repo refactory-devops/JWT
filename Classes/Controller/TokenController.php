@@ -9,7 +9,6 @@ namespace RFY\JWT\Controller;
 
 use Neos\Flow\Annotations as Flow;
 
-use Neos\Flow\Http\Component\SetHeaderComponent;
 use Neos\Flow\I18n\Service;
 use Neos\Flow\Mvc\View\JsonView;
 use Neos\Flow\Security\Authentication\Controller\AbstractAuthenticationController;
@@ -57,9 +56,9 @@ class TokenController extends AbstractAuthenticationController
      */
     public function initializeAuthenticateAction()
     {
-        $this->response->setComponentParameter(SetHeaderComponent::class, 'Access-Control-Allow-Origin', $this->responseHeaders['Access-Control-Allow-Origin']);
+        $this->response->setHttpHeader('Access-Control-Allow-Origin', $this->responseHeaders['Access-Control-Allow-Origin']);
         if ($this->request->getHttpRequest()->getMethod() === 'OPTIONS') {
-            $this->response->setComponentParameter(SetHeaderComponent::class, 'Access-Control-Allow-Headers', 'Content-Type, Authorization');
+            $this->response->setHttpHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
             $this->response->setStatusCode(204);
             return '';
         }

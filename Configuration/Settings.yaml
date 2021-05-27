@@ -11,18 +11,12 @@ Neos:
             token: 'RFY\JWT\Security\Authentication\Token\JsonWebToken'
             entryPoint: 'HttpBasic'
     http:
-      chain:
-        'process':
-          chain:
-            'RFY.JWT:getJwtToken':
-              component: 'RFY\JWT\Http\GetJwtTokenComponent'
-        'postprocess':
-          chain:
-            'RFY.JWT:setJwtToken':
-              'position': 'after setSessionCookie'
-              component: 'RFY\JWT\Http\SetJwtTokenComponent'
-              componentOptions:
-                authenticationProviderName: 'JwtAuthenticationProvider'
+      middlewares:
+        'RFY.JWT:getJwtToken':
+          middleware: 'RFY\JWT\Http\GetJwtTokenMiddleware'
+        'RFY.JWT:setJwtToken':
+          position: 'start'
+          middleware: 'RFY\JWT\Http\SetJwtTokenMiddleware'
 
 RFY:
   JWT:
