@@ -3,24 +3,48 @@ declare(strict_types=1);
 
 namespace RFY\JWT\Http;
 
+use Neos\Flow\Annotations as Flow;
+use Neos\Flow\Http\Cookie;
 use Neos\Flow\Security\Context as SecurityContext;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Log\LoggerInterface;
+use RFY\JWT\Security\Authentication\Factory\CookieFactory;
 use RFY\JWT\Security\Authentication\Factory\TokenFactory;
+use RFY\JWT\Security\Authentication\Token\JsonWebToken;
 use RFY\JWT\Security\Authentication\Token\JwtToken;
 
 final class SetJwtTokenMiddleware implements MiddlewareInterface
 {
-    private string $authenticationProviderName;
+    private string $jwtAuthenticationProviderName;
+    private string $jsonWebAuthenticationProviderName;
     private SecurityContext $securityContext;
     private LoggerInterface $logger;
 
-    public function __construct(string $authenticationProviderName, SecurityContext $securityContext, LoggerInterface $logger)
+    /**
+     * @var array
+     * @Flow\InjectConfiguration(path="tokenStrategy")
+     */
+    protected array $tokenStrategy;
+
+    /**
+     * @var array
+     * @Flow\InjectConfiguration(path="tokenSources")
+     */
+    protected array $tokenSources;
+
+    /**
+     * @Flow\Inject
+     * @var CookieFactory
+     */
+    protected $cookieFactory;
+
+    public function __construct(string $jwtAuthenticationProviderName, string $jsonWebAuthenticationProviderName, SecurityContext $securityContext, LoggerInterface $logger)
     {
-        $this->authenticationProviderName = $authenticationProviderName;
+        $this->jwtAuthenticationProviderName = $jwtAuthenticationProviderName;
+        $this->jsonWebAuthenticationProviderName = $jsonWebAuthenticationProviderName;
         $this->securityContext = $securityContext;
         $this->logger = $logger;
     }
@@ -32,30 +56,60 @@ final class SetJwtTokenMiddleware implements MiddlewareInterface
             $this->logger->debug(\sprintf('JWT package: (%s) Cannot send JWT because the security context could not be initialized.', \get_class($this)));
             return $response;
         }
-        if (!$this->isJWTAuthentication()) {
+
+        $authenticationProviderName = $this->getJWTAuthenticationProviderName();
+        if ($authenticationProviderName === null) {
             return $response;
         }
 
-        $account = $this->securityContext->getAccountByAuthenticationProviderName($this->authenticationProviderName);
+
+        $account = $this->securityContext->getAccountByAuthenticationProviderName($authenticationProviderName);
+
         if ($account === null) {
-            $this->logger->info(\sprintf('JWT package: (%s) No Flow account found for %s, removing JWT cookie.', \get_class($this), $this->authenticationProviderName));
+            foreach ($this->tokenSources as $source) {
+                if (!empty($source['cookie']) && !empty($source['name'])) {
+                    $response->withAddedHeader('Set-Cookie', (string) $this->cookieFactory->getBlankJwtCookie($source['cookie']));
+                }
+            }
+            $this->logger->info(\sprintf('JWT package: (%s) No Flow account found for %s, removing JWT cookie.', \get_class($this), $this->jwtAuthenticationProviderName));
             return $response;
         }
 
         $tokenFactory = new TokenFactory($request);
-        return $response->withAddedHeader('Authorization', 'Bearer ' . $tokenFactory->getJsonWebToken());
+        $token = $tokenFactory->getJsonWebToken();
+
+        foreach ($this->tokenSources as $source) {
+            if (!empty($source['from']) && !empty($source['name'])) {
+                if ($source['from'] === 'cookie') {
+                    $response = $response->withAddedHeader('Set-Cookie', (string) $this->cookieFactory->getJwtCookie($source['name'], $token));
+                }
+                if ($source['from'] === 'header') {
+                    $response = $response->withAddedHeader($source['name'], 'Bearer ' . $token);
+                }
+            }
+        }
+
+        return $response;
     }
 
     /**
-     * @return bool
+     * @return string|null
      */
-    private function isJWTAuthentication(): bool
+    private function getJWTAuthenticationProviderName(): ?string
     {
+
         foreach ($this->securityContext->getAuthenticationTokensOfType(JwtToken::class) as $token) {
-            if ($token->getAuthenticationProviderName() === $this->authenticationProviderName) {
-                return true;
+            if ($token->getAuthenticationProviderName() === $this->jwtAuthenticationProviderName) {
+                return $token->getAuthenticationProviderName();
             }
         }
-        return false;
+        foreach ($this->securityContext->getAuthenticationTokensOfType(JsonWebToken::class) as $token) {
+            if ($token->getAuthenticationProviderName() === $this->jsonWebAuthenticationProviderName) {
+                return $token->getAuthenticationProviderName();
+            }
+        }
+        return null;
     }
+
+
 }

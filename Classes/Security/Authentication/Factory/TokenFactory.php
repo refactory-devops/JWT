@@ -70,7 +70,7 @@ class TokenFactory
     {
         /** @var JwtAccount $account */
         $account = $this->securityContext->getAccount();
-        $payload['username'] = $account->getAccountIdentifier();
+        $payload['username'] = $account->getAccountIdentifier() ?? $account->getUsername();
         $payload['identifier'] = $this->persistenceManager->getIdentifierByObject($account->getParty());
         $payload['user-agent'] = $this->request->getHeader('User-Agent');
         $payload['ip-address'] = $this->request->getAttribute('clientIpAddress');

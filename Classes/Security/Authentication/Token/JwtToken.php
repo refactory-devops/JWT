@@ -39,6 +39,10 @@ class JwtToken extends AbstractToken implements SessionlessTokenInterface
 
         foreach ($this->tokenSources as $tokenSource) {
             $name = $tokenSource['name'];
+            if ($tokenSource['from'] === 'cookie') {
+                $token = $httpRequest->getCookieParams()[$name] ?? null;
+                break;
+            }
             if ($tokenSource['from'] === 'header') {
                 if ($httpRequest->hasHeader($name)) {
                     $token = $httpRequest->getHeader($name)[0];
