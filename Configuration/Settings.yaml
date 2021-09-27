@@ -34,4 +34,5 @@ RFY:
     tokenStrategy:
       'token': true
       'cookie': false
+    inheritRolesFromOtherProviders: []
     claimMapping: []

@@ -86,10 +86,23 @@ class JwtAuthenticationProvider extends AbstractProvider
             $authenticationToken->setAuthenticationStatus(TokenInterface::WRONG_CREDENTIALS);
             return;
         }
+
         $account = new JwtAccount();
         $account->setClaims($claims);
         $account->setAuthenticationProviderName('JwtAuthenticationProvider');
         $account->setParty($this->partyRepository->findByIdentifier($claims->{'identifier'}));
+
+        if (is_array($this->claimMapping['inheritRolesFromOtherProviders']) && count($this->claimMapping['inheritRolesFromOtherProviders']) > 0) {
+            /** @var Account $otherAccount */
+            foreach ($account->getParty()->getAccounts() as $otherAccount) {
+                if (strstr($otherAccount->getAuthenticationProviderName(), implode(',', $this->claimMapping['inheritRolesFromOtherProviders']))) {
+                    foreach ($otherAccount->getRoles() as $role) {
+                        $account->addRole($role);
+                    }
+                    break;
+                }
+            }
+        }
 
         $rolesClaim = $this->claimMapping['roles'];
         foreach ($rolesClaim as $key => $roleClaim) {
