@@ -74,6 +74,7 @@ class TokenFactory
         $payload['identifier'] = $this->persistenceManager->getIdentifierByObject($account->getParty());
         $payload['user-agent'] = $this->request->getHeader('User-Agent');
         $payload['ip-address'] = $this->request->getAttribute('clientIpAddress');
+        $payload['provider'] = $account->getAuthenticationProviderName();
 
         if ($account->getCreationDate() instanceof \DateTime) {
             $payload['creationDate'] = $account->getCreationDate()->getTimestamp();

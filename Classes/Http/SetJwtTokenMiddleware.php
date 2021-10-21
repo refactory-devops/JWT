@@ -18,8 +18,8 @@ use RFY\JWT\Security\Authentication\Token\JwtToken;
 
 final class SetJwtTokenMiddleware implements MiddlewareInterface
 {
-    private string $jwtAuthenticationProviderName;
-    private string $jsonWebAuthenticationProviderName;
+    private array $jwtAuthenticationProviderName;
+    private array $jsonWebAuthenticationProviderName;
     private SecurityContext $securityContext;
     private LoggerInterface $logger;
 
@@ -41,7 +41,7 @@ final class SetJwtTokenMiddleware implements MiddlewareInterface
      */
     protected $cookieFactory;
 
-    public function __construct(string $jwtAuthenticationProviderName, string $jsonWebAuthenticationProviderName, SecurityContext $securityContext, LoggerInterface $logger)
+    public function __construct(array $jwtAuthenticationProviderName, array $jsonWebAuthenticationProviderName, SecurityContext $securityContext, LoggerInterface $logger)
     {
         $this->jwtAuthenticationProviderName = $jwtAuthenticationProviderName;
         $this->jsonWebAuthenticationProviderName = $jsonWebAuthenticationProviderName;
@@ -99,17 +99,17 @@ final class SetJwtTokenMiddleware implements MiddlewareInterface
     {
 
         foreach ($this->securityContext->getAuthenticationTokensOfType(JwtToken::class) as $token) {
-            if ($token->getAuthenticationProviderName() === $this->jwtAuthenticationProviderName) {
+            if (in_array($token->getAuthenticationProviderName(), $this->jwtAuthenticationProviderName)) {
                 return $token->getAuthenticationProviderName();
             }
         }
         foreach ($this->securityContext->getAuthenticationTokensOfType(JsonWebToken::class) as $token) {
-            if ($token->getAuthenticationProviderName() === $this->jsonWebAuthenticationProviderName) {
+            if (in_array($token->getAuthenticationProviderName(), $this->jsonWebAuthenticationProviderName)) {
                 return $token->getAuthenticationProviderName();
             }
         }
+
         return null;
     }
-
 
 }

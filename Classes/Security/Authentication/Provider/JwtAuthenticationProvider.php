@@ -89,7 +89,7 @@ class JwtAuthenticationProvider extends AbstractProvider
 
         $account = new JwtAccount();
         $account->setClaims($claims);
-        $account->setAuthenticationProviderName('JwtAuthenticationProvider');
+        $account->setAuthenticationProviderName($claims->{'provider'});
         $account->setParty($this->partyRepository->findByIdentifier($claims->{'identifier'}));
 
         if (is_array($this->claimMapping['inheritRolesFromOtherProviders']) && count($this->claimMapping['inheritRolesFromOtherProviders']) > 0) {
