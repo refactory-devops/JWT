@@ -58,20 +58,20 @@ final class SetJwtTokenMiddleware implements MiddlewareInterface
         }
 
         $authenticationProviderName = $this->getJWTAuthenticationProviderName();
+
         if ($authenticationProviderName === null) {
             return $response;
         }
-
 
         $account = $this->securityContext->getAccountByAuthenticationProviderName($authenticationProviderName);
 
         if ($account === null) {
             foreach ($this->tokenSources as $source) {
-                if (!empty($source['cookie']) && !empty($source['name'])) {
-                    $response->withAddedHeader('Set-Cookie', (string) $this->cookieFactory->getBlankJwtCookie($source['cookie']));
+                if (!empty($source['from']) && !empty($source['name'])) {
+                    $response = $response->withAddedHeader('Set-Cookie', (string) $this->cookieFactory->getBlankJwtCookie($source['name']));
                 }
             }
-            $this->logger->info(\sprintf('JWT package: (%s) No Flow account found for %s, removing JWT cookie.', \get_class($this), $this->jwtAuthenticationProviderName));
+            $this->logger->info(\sprintf('JWT package: (%s) No Flow account found for %s, removing JWT cookie.', \get_class($this), implode(',', $this->jwtAuthenticationProviderName)));
             return $response;
         }
 
@@ -80,7 +80,7 @@ final class SetJwtTokenMiddleware implements MiddlewareInterface
 
         foreach ($this->tokenSources as $source) {
             if (!empty($source['from']) && !empty($source['name'])) {
-                if ($source['from'] === 'cookie') {
+                if ($source['from'] === 'cookie' && !isset($request->getCookieParams()[$source['name']])) {
                     $response = $response->withAddedHeader('Set-Cookie', (string) $this->cookieFactory->getJwtCookie($source['name'], $token));
                 }
                 if ($source['from'] === 'header') {
