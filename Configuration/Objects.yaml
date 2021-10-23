@@ -11,4 +11,6 @@ RFY\JWT\Security\KeyProvider:
 RFY\JWT\Http\SetJwtTokenMiddleware:
   arguments:
     1:
-      value: 'JwtAuthenticationProvider'
+      value: ['JwtAuthenticationProvider']
+    2:
+      value: ['DefaultProvider']

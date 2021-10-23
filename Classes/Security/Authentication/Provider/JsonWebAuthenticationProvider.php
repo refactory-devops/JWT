@@ -50,7 +50,7 @@ class JsonWebAuthenticationProvider extends AbstractProvider
 
     /**
      * @var array
-     * @Flow\InjectConfiguration(path="claimMapping")
+     * @Flow\InjectConfiguration(package="RFY.JWT", path="claimMapping")
      */
     protected $claimMapping;
 
