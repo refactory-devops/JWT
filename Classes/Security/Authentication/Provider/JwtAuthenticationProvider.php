@@ -9,6 +9,7 @@ use Neos\Flow\Security\Authentication\Provider\AbstractProvider;
 use Neos\Flow\Security\Authentication\TokenInterface;
 use Neos\Flow\Security\Exception\UnsupportedAuthenticationTokenException;
 use Neos\Flow\Security\Policy\PolicyService;
+use Neos\Party\Domain\Model\AbstractParty;
 use RFY\JWT\Security\Authentication\Token\JwtToken;
 use RFY\JWT\Security\JwtAccount;
 use RFY\JWT\Service\JwtService;
@@ -89,7 +90,12 @@ class JwtAuthenticationProvider extends AbstractProvider
         $account = new JwtAccount();
         $account->setClaims($claims);
         $account->setAuthenticationProviderName('JwtAuthenticationProvider');
-        $account->setParty($this->partyRepository->findByIdentifier($claims->{'identifier'}));
+        $party = $this->partyRepository->findByIdentifier($claims->{'identifier'});
+        if (!$party instanceof AbstractParty) {
+            $authenticationToken->setAuthenticationStatus(TokenInterface::WRONG_CREDENTIALS);
+            return;
+        }
+        $account->setParty($party);
 
         $rolesClaim = $this->claimMapping['roles'];
         foreach ($rolesClaim as $key => $roleClaim) {
