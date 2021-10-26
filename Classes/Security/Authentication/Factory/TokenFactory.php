@@ -56,6 +56,12 @@ class TokenFactory
     protected $request;
 
     /**
+     * @var int
+     * @Flow\InjectConfiguration(path="tokenLifetime")
+     */
+    protected $tokenLifetime;
+
+    /**
      * @param $request
      */
     public function __construct($request)
@@ -79,10 +85,20 @@ class TokenFactory
             $payload['creationDate'] = $account->getCreationDate()->getTimestamp();
         }
 
-        // TODO Add refresh token + expire date
         if ($account->getExpirationDate() instanceof \DateTime) {
-            $payload['expirationDate'] = $account->getExpirationDate()->getTimestamp();
+            $payload['accountExpirationDate'] = $account->getExpirationDate()->getTimestamp();
+        }
+
+        if ($this->tokenLifetime > 0) {
+            $payload['exp'] = (new \DateTime())->getTimestamp() + $this->tokenLifetime;
+        }
+
+        if (array_key_exists('accountExpirationDate', $payload) && array_key_exists('exp', $payload)) {
+            if ($payload['accountExpirationDate'] < $payload['exp']) {
+                $payload['exp'] = $payload['accountExpirationDate'];
+            }
         }
         return $this->jwtService->createJsonWebToken($payload);
     }
+
 }

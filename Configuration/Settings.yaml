@@ -30,3 +30,4 @@ RFY:
       - from: header
         name: Authorization
     claimMapping: []
+    tokenLifetime: 86400
